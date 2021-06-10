@@ -14,6 +14,7 @@ public class Warehouse {
     private String name;
     private Product[] stock;
     private int ID;
+    private Warehouse next;
 
     /**
      * Constructor de la clase Warehouse
@@ -100,5 +101,24 @@ public class Warehouse {
                     JOptionPane.showMessageDialog(null, "El producto fue añadido con éxito.");
             }
     }
+    
+    
+    /**
+     * Método para obtener el siguiente nodo al que apunta
+     * @return
+     */
+
+    public Warehouse getNext() {
+        return next;
+    }
+
+    /**
+     * Método para seleccionar el siguiente nodo al que apunta
+     * @param next
+     */
+    public void setNext(Warehouse next) {
+        this.next = next;
+    }
+    
 }
 
