@@ -11,11 +11,10 @@ import javax.swing.JOptionPane;
  */
 public class Graph {
 
-
-	Warehouse[] warehouses;
-	int [][] adjMatrix;
-	int vertexNumber; 
-	int warehousesInGraph; //esto es la cantidad de nodos ya en la matriz de adyacencia
+    Warehouse[] warehouses;
+    int [][] adjMatrix;
+    int vertexNumber; 
+    int warehousesInGraph; //esto es la cantidad de nodos ya en la matriz de adyacencia
 	
     /**
      * Constructor de la clase Graph. Se inicializa el grafo sin almacenes en él, con una matriz de adyacencia vacía y un array de almacenes también vacío.
@@ -34,32 +33,14 @@ public class Graph {
 		
 	}
 
-	/*
-	public boolean isVertexInGraph(Warehouse vertex){
-		for (Warehouse warehouse : this.warehouses){
-			if (warehouse.getName() == vertex.getName()){
-				return true;
-			}
-		}
-		return false;
-	}/*
-	public boolean isVertexInGraph(Warehouse vertex){
-		for (Warehouse warehouse : this.warehouses){
-			if (warehouse.getName() == vertex.getName()){
-				return true;
-			}
-		}
-		return false;
-	}
-	*/ //No sé si este sea necesario lol con ver que el índice sea distinto a -1 basta
-
+    
+    
     /**
      * Método que devuelve el índice (la identificación) de un almacén cuyo nombre se pasa por parámetro en el array de almacenes y la matriz de adyacencia.
      * @param name nombre del almacén del cual se busca el índice correspondiente a dicho vértice en la matriz de adyacencia y el array de almacenes.
      * @return el índice del almacén si el mismo se encuentra en el array de almacenes en el grafo, o -1 si el almacén buscado no existe en el grafo.
      */
-	
-	public int getVertexIndex(String name){ //OJO! los nombres deben ser únicos
+    public int getVertexIndex(String name){ //OJO! los nombres deben ser únicos
 		for (Warehouse warehouse : this.warehouses){
                     if (warehouse.getName().equals(name)){
                         return warehouse.getID();
@@ -68,6 +49,8 @@ public class Graph {
 		return -1;
 	}
 
+        
+        
     /**
      * Método que permite saber si un índice (para el array de almacenes o la matriz de adyacencia) es válido (está entre 0, incluido, y la cantidad de almacenes en el grafo, sin incluir)
      * @param index índice del cual se quiere conocer su validez
@@ -77,6 +60,8 @@ public class Graph {
 		return (index>=0 && index < this.warehousesInGraph);
 	}
 
+    
+    
     /**
      * Método que permite añadir un nuevo vértice/almacén al grafo.
      * @param newWarehouse nuevo almacén que se pretende agregar al grafo.
@@ -95,6 +80,20 @@ public class Graph {
         }
 	}
 
+    
+    
+    /**
+     * Método para retornar un nodo dado su índice
+     * @param i, siendo este el índice del nodo que se desea
+     * @return el nodo correspondiente a ese índice
+     * @author Ana Tovar
+     */
+    public Warehouse getVertex(int i){
+        return this.warehouses[i];
+    }
+    
+    
+    
     /**
      * Método que permite añadir un arco entre dos vértices del grafo: el vértice "A" (vértice de origen) y el "B" (vértice de destino)
      * @param nameA nombre del vértice A (de donde sale el arco que se añadirá)
@@ -121,6 +120,8 @@ public class Graph {
         }
     }
 
+    
+    
     /**
      * Método para expandir el número máximo de vértices que tiene el grafo en 1 unidad. Se crean una nueva matriz de adyacencia (con una fila y una columna más) y un nuevo array de almacenes.
      */
@@ -138,6 +139,8 @@ public class Graph {
         this.warehouses = newWarehouses;
 	}
 
+    
+    
     /**
      * Método que permite eliminar un almacén del grafo, si es que dicha eliminación es válida (el almacén está en el grafo y su supresión no deja vértices aislados).
      * @param name nombre del almacén que se desea borrar del grafo
@@ -178,6 +181,8 @@ public class Graph {
 		
 	} 
 
+    
+    
     /**
      * Método que permite saber si la eliminación de un almacén específico del grafo dejaría a al menos un otro almacén aislado (sin entradas o salidas)
      * @param vertexIndex índice del almacén de cuya eliminación se quiere determinar la validez
@@ -203,45 +208,39 @@ public class Graph {
         return true; //si ningún vértice se quedaría aislado al eliminar el vértice, entonces se retorna true
 }
 
-          
-
-    /**
-     * Método para retornar un nodo dado su índice
-     * @param i, siendo este el índice del nodo que se desea
-     * @return el nodo correspondiente a ese índice
-     */
-    public Warehouse getVertex(int i){
-        return this.warehouses[i];
-    }
-
+    
+    
     /**
      * Método para mostrar la disponibilidad total mediante BFS (Breadth First Search)
      * @return un string con la información deseada que aparecerá en la interfaz
+     * @author Ana Tovar
      */
-    public String bfs(){ // Ya que el ID = número de vértice, no paso ningún parámetro porque siempre se iniciará desde el primero
+    public String bfs(){ // Ya que el ID es el número de vértice, no paso ningún parámetro porque siempre se iniciará desde el primero
 
         String toPrint = "";
-        boolean visited[] = new boolean[vertexNumber]; // Crea un array de booleanos del tamaño de los nodos, default en false
+        boolean visited[] = new boolean[warehousesInGraph]; // Crea un array de booleanos del tamaño de la cantidad de almacenes en el grafo, default en false
         Queue queue = new Queue();
         Warehouse aux;
 
-        toPrint += "Búsqueda BFS\n";
+        toPrint += "Búsqueda BFS\nDisponibilidad de productos por almacén\n";
 
         queue.inqueue(getVertex(0)); // Los nodos visitados entrarán aquí;
         visited[0] = true; // Ok entonces aquí la idea es utilizar el índice a cada warehouse, de lo contrario no podremos tener una lista booleana de visitados y eso causaría un loop infinito.
+        
         while (!queue.isEmpty()){
 
             aux = queue.getHead();
-            toPrint += aux.getName() + "\n";
+            queue.dequeue(); // Se hace dequeue porque igualmente se anexarán otros nodos más adelante por lo que no sale del while, el que usamos para entrar no nos interesa porque ya quedó registrado
+            
+            toPrint += "Almacén " + aux.getName() + "\n";
             Product[] products = aux.getStock();
             for (Product product : products) {
 
                 toPrint += product.getName() + " x" + product.getAmmount() + "\n";
 
             }
-
-            queue.dequeue(); // Se hace dequeue porque igualmente se anexarán otros nodos más adelantes por lo que no sale del while, el que usamos para entrar no nos interesa porque ya quedó registrado
-            for(int i=0; i < vertexNumber; i++){
+            
+            for(int i=0; i < warehousesInGraph; i++){
 
                 if(adjMatrix[aux.getID()][i] != 0 && visited[i] == false){
 
@@ -256,37 +255,38 @@ public class Graph {
         return toPrint; //String de info de warehouses en el orden que se encontraron en el BFS
     }       
 
+    
+    
     /**
      * Método el cual busca un (1) producto en específico mediante BFS
      * @param name, nombre del producto que se desea encontrar
      * @return otro string el cual contiene los almacenes con dicho producto y la cantidad de éste, se mostrará en la interfaz
+     * @author Ana Tovar
      */
     public String bfsProduct(String name){
 
         String toPrint = "";
-        boolean visited[] = new boolean[vertexNumber]; // Crea un array de booleanos del tamaño de los nodos, default en false
+        boolean visited[] = new boolean[warehousesInGraph]; // Crea un array de booleanos del tamaño la cantidad de almacenes en el grafo, default en false
         Queue queue = new Queue();
-
-        toPrint += "Búsqueda BFS\n";
-
         Warehouse aux;
+        
+        toPrint += "Búsqueda BFS\nDisponibilidad de " + name + " por almacén.\n";
+        
         queue.inqueue(getVertex(0)); // Se  supone que empieza desde el menor ID, es decir, 0
-
         visited[0] = true;
+        
         while (!queue.isEmpty()){
 
             aux = queue.getHead();
-
+            queue.dequeue();
+            
             Product[] products = aux.getStock();
             for (Product product : products) {
-
                 if (product.getName().equals(name)) {
-
-                    toPrint += aux.getName() + "\n" + product.getName() + " x" + product.getAmmount() + "\n"; //Aquí solo añade a los almacenes que tengan ese producto, si todos lo tienen, a pos , igual solo se appendea la cantidad de ESE producto en específico, no más
+                    toPrint += "Almacén "+ aux.getName() + "\n" + product.getName() + " x" + product.getAmmount() + "\n"; //Aquí solo añade a los almacenes que tengan ese producto, si todos lo tienen, a pos , igual solo se appendea la cantidad de ESE producto en específico, no más
+                    break;
                 }
             }
-
-            queue.dequeue();
 
             for(int i=1; i < vertexNumber; i++){ // En este caso i empieza desde 1 ya que comencé desde 0
 
@@ -302,124 +302,122 @@ public class Graph {
         return toPrint;
     }
 
+    
+    
     /**
      * Método para mostrar la disponibilidad total mediante DFS (Depth First Search)
      * @return un string con la información deseada que aparecerá en la interfaz
+     * @author Ana Tovar
      */
     public String dfs(){ 
 
         String toPrint = "";
-        boolean visited[] = new boolean[vertexNumber];
+        boolean visited[] = new boolean[warehousesInGraph];
         Stack stack = new Stack();
         Warehouse aux;
 
-        toPrint += "Búsqueda DFS\n";
+        toPrint += "Búsqueda DFS\nDisponibilidad de productos por almacén\n";
 
         stack.push(getVertex(0)); // Los nodos visitados entrarán aquí; ahora usamos el stack
-        visited[getVertexIndex(getVertex(0).getName())] = true;
-        toPrint += "Disponibilidad de productos por almacén" + "\n" + "Almacén " + getVertex(0).getName() + "\n";
+        visited[0] = true;
+        
+        toPrint += "Almacén " + getVertex(0).getName() + "\n";
         Product[] products = getVertex(0).getStock();
-
-            for (Product product : products) {
-
-                toPrint += product.getName() + " x" + Integer.toString(product.getAmmount()) + "\n"; // Este print es "único" en el sentido que solo se hace para el source, porque los otros se harán dentro del for loop siguiente
-            }
-
-        while (!stack.isEmpty()){
-
-            aux = stack.getTop();
-            int aux_num = getVertexIndex(aux.getName()); // Aquí necesito una variable entera para mejor manejo
-
-
-            stack.pop();
-
-            for(int i=0; i < vertexNumber; i++){
-
-                if(adjMatrix[aux_num][i] != 0 && visited[i] == false){
-
-                    Warehouse nextVertex = getVertex(i); // A diferencia del BFS, aquí necesito guardar ese vértice en una variable para su mejor manejo
-                    products = nextVertex.getStock(); // Cambia el array de productos por almacén
-
-                    toPrint += "Almacén " + nextVertex.getName() + "\n"; // Nueva adición al toPrint, ya que si se incluye en el while, habrían duplicados.                        
-                    for (Product product : products) {
-                        toPrint += product.getName() + " x" + product.getAmmount() + "\n";
-                        }
-
-                    stack.push(getVertex(aux_num)); // Me añade al stack, recordar que aquí es LIFO (Last in, first out)
-                    visited[i] = true; //Esto settea los vértices ya visitados como true, ya que esa es la condición que vamos a revisar.
-                    aux_num = i; // "Salta" al siguiente nodo inmediatamente
-                    i = -1; // "Se reinicia el contador", -1 ya que gracias al i++ se convertirá en 0
-
-                }
-            }  
-
+        for (Product product : products) {
+            toPrint += product.getName() + " x" + product.getAmmount() + "\n"; // Este print es "único" en el sentido que solo se hace para el vértice de menor índice, porque los otros se harán dentro del for loop siguiente
         }
 
+        while (!stack.isEmpty()){
+            
+            aux = stack.getTop();
+            stack.pop();
+
+            for(int i=0; i < warehousesInGraph; i++){
+
+                if(adjMatrix[aux.getID()][i] != 0 && visited[i] == false){
+
+                    stack.push(aux); // Me añade al stack, recordar que aquí es LIFO (Last in, first out)
+                    visited[i] = true; //Esto settea los vértices ya visitados como true, ya que esa es la condición que vamos a revisar.
+                    
+                    aux = getVertex(i); // "Salta" al siguiente nodo inmediatamente
+                    products = aux.getStock(); // Cambia el array de productos por almacén
+                    
+                    toPrint += "Almacén " + aux.getName() + "\n"; // Nueva adición al toPrint, ya que si se incluye en el while, habrían duplicados.                        
+                    for (Product product : products) {
+                        toPrint += product.getName() + " x" + product.getAmmount() + "\n";
+                    }
+
+                    i = -1; // "Se reinicia el contador", -1 ya que gracias al i++ se convertirá en 0
+                }
+            }  
+        }
         return toPrint; //String de info de warehouses en el orden que se encontraron en el DFS instead
     }
 
 
-
+    
     /**
-     * Método en el cual, dado un (1) producto, lo busque mediante DFS
+     * Método en el cual, dado un (1) producto, lo busque mediante DFS en todos los almacenes del grafo
      * @param name, nombre del producto que se desea encontrar
      * @return string de almacenes con dicho producto y sus respectivas cantidades
+     * @author Ana Tovar
      */
     public String dfsProduct(String name){ 
 
         String toPrint = "";
-        boolean visited[] = new boolean[vertexNumber];
-
+        boolean visited[] = new boolean[warehousesInGraph];
         Stack stack = new Stack();
         Warehouse aux;
-        Product[] products = getVertex(0).getStock(); // Inicio desde cero, el primer nodo
-
+        
+        toPrint += "Búsqueda DFS\nDisponibilidad de " + name + " por almacén.\n";
+        
         stack.push(getVertex(0)); 
         visited[0] = true;
-
+        
+        Product[] products = getVertex(0).getStock(); // Inicio desde cero, el primer nodo
         for (Product product : products) {
                 if (product.getName().equals(name)) {
                     toPrint += "Almacén " + getVertex(0).getName() + "\n" + product.getName() + " x" + product.getAmmount() + "\n";
+                    break;
                 }
         } // Este print parece redundante pero es necesario para que aparezca el primer nodo y no se repita en las demás iteraciones. Es único
 
         while (!stack.isEmpty()){
 
             aux = stack.getTop();
-            int aux_num = aux.getID(); // Aquí necesito una variable entera para mejor manejo
-
             stack.pop();
 
-            for(int i=0; i < vertexNumber; i++){
+            for(int i=0; i < warehousesInGraph; i++){
 
-                if(adjMatrix[aux_num][i] != 0 && visited[i] == false){
+                if(adjMatrix[aux.getID()][i] != 0 && visited[i] == false){
 
-                    Warehouse nextVertex = getVertex(i); // A diferencia del BFS, aquí necesito guardar ese vértice en una variable para su mejor manejo
-                    products = nextVertex.getStock();
-
+                    stack.push(aux); // Me añade al stack, recordar que aquí es LIFO (Last in, first out)
+                    visited[i] = true; //Esto settea los vértices ya visitados como true, ya que esa es la condición que vamos a revisar.
+                    
+                    aux = getVertex(i); // "Salta" al siguiente nodo inmediatamente
+                    products = aux.getStock(); // Cambia el array de productos por almacén
+                    
                     for (Product product : products) {
                         if (product.getName().equals(name)){
-                            toPrint += "Almacén " + nextVertex.getName() + "\n" + product.getName() + " x" + product.getAmmount() + "\n";
+                            toPrint += "Almacén " + aux.getName() + "\n" + product.getName() + " x" + product.getAmmount() + "\n";
+                            break;
                         }
 
-                    stack.push(getVertex(aux_num)); // Me añade al stack, recordar que aquí es LIFO (Last in, first out)
-                    visited[i] = true; //Esto settea los vértices ya visitados como true, ya que esa es la condición que vamos a revisar.
-                    aux_num = i; // "Salta" al siguiente nodo inmediatamente
                     i = -1; // "Se reinicia el contador", -1 ya que gracias al i++ se convertirá en 0
-
                     }
                 }  
-
             }
-
         }
         return toPrint;
     }
 
+    
+    
     /**
      * Método para mostrar los almacenes candidatos a pedir más stick
      * @param request es un nodo Product el cual se solicita a otros almacenes
      * @return una lista de nodos Warehouse que son elegibles para ser el almacén desde el que se solicita el stock extra
+     * @author Ana Tovar
      */     
     public WarehouseList availability(Product request){
         WarehouseList available = new WarehouseList(); // se crea una array nuevo, con valores null inicialmente
@@ -439,11 +437,14 @@ public class Graph {
         return available;
     }
 
+    
+    
     /**
      * Dijkstra Short Path, algoritmo de camino más corto de Dijkstra
      * @param source Almacén desde donde se realiza el pedido original
      * @param target Almacén desde donde se realiza la solicitud de stock
      * @return string final para imprimir en la interfaz
+     * @author Ana Tovar
      */
     public String dijkSP(Warehouse source, Warehouse target){ 
         boolean[] visited = new boolean[vertexNumber]; 
@@ -485,12 +486,15 @@ public class Graph {
         return null; // En este caso no se obtiene nada, retornando null
 
     }
-        
+  
+    
+    
     /**
      * Método para obtener el índice vértice con distancia mínima hasta el momento
      * @param distance array con las respectivas distancias acumuladas entre nodos
      * @param visited array con los índices de los nodos ya visitados
      * @return índice del vértice con menor distancia
+     * @author Ana Tovar
      */
     public int minimumDistance(int[] distance, boolean[] visited){
         int minimum = Integer.MAX_VALUE; // El mínimo se inicializa como MAX_VALUE para hacer la comparación más adelante
@@ -506,12 +510,15 @@ public class Graph {
         return minIndexVertex; // Se retorna el ínidice del vértice que tiene el camino/distancia más corto
     }
 
+    
+    
     /**
      * Método para generar el string a imprimir
      * @param source nodo desde el cual se solicita la compra original
      * @param vertexPath array con el recorrido de los nodos que se ha realizado
      * @param lastDistance número entero con la distancia total
      * @return string con la información deseada
+     * @author Ana Tovar
      */
     public String dijkPrint(Warehouse source, int[]vertexPath, int lastDistance){
         String toPrintDik = "";
