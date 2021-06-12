@@ -414,7 +414,7 @@ public class Graph {
     
     
     /**
-     * Método para mostrar los almacenes candidatos a pedir más stick
+     * Método para mostrar los almacenes candidatos a pedir más stock
      * @param request es un nodo Product el cual se solicita a otros almacenes
      * @return una lista de nodos Warehouse que son elegibles para ser el almacén desde el que se solicita el stock extra
      * @author Ana Tovar
@@ -441,45 +441,47 @@ public class Graph {
     
     /**
      * Dijkstra Short Path, algoritmo de camino más corto de Dijkstra
-     * @param source Almacén desde donde se realiza el pedido original
-     * @param target Almacén desde donde se realiza la solicitud de stock
+     * @param source Almacén desde donde se realiza la solicitud de stock 
+     * @param target Almacén desde donde se realiza el pedido original
      * @return string final para imprimir en la interfaz
      * @author Ana Tovar
      */
     public String dijkSP(Warehouse source, Warehouse target){ 
-        boolean[] visited = new boolean[vertexNumber]; 
-        int[] distance =  new int[vertexNumber]; // Aquí se guardaran las distancias
+        boolean[] visited = new boolean[warehousesInGraph]; 
+        int[] distance =  new int[warehousesInGraph]; // Aquí se guardaran las distancias
         int INF = Integer.MAX_VALUE; // El mayor valor de los enteros
-        int[] vertexPath = new int[vertexNumber];
-        int lastDistance;
+        int[] vertexPath = new int[warehousesInGraph];
+        int lastDistance = 0;
         String toPrint;
 
-        for(int i = 0; i < vertexNumber; i++){
+        for(int i = 0; i < warehousesInGraph; i++){
 
             distance[i] = INF; // Se inicializan todas las distancias como "infinito", no están visitadas
         }
 
-        distance[getVertexIndex(source.getName())] = 0; // El nodo almacén desde donde se inicia es 0, ya que se inicia desde allí
-
-        for(int i = 0; i < vertexNumber; i++){
+        distance[source.getID()] = 0; // La distancia desde donde se inicia es 0
+        vertexPath[source.getID()] = -1; //El source no tiene un nodo precedente
+        
+        for(int i = 0; i < warehousesInGraph; i++){
 
             int aux = minimumDistance(distance, visited); // Se llama al método para saber la distancia mínima, siempre iniciará con 0 ya que ese es el nodo source;
-            visited[aux] = true; // Se marca como visitado
+            if (aux != -1){    
+                visited[aux] = true; // Se marca como visitado
+            }else{ //si se retorna -1, significa que no hay más caminos que recorrer, por lo que si no se había conseguido un camino válido hasta el target, significa que dicho camino no existe.
+                break;
+            }
+            for(int j = 0; j < warehousesInGraph; j++){
 
-            for(int j = 0; j < vertexNumber; j++){
-
-                if(visited[j] == false && adjMatrix[aux][j] != 0 && distance[aux] != INF && (distance[aux] + adjMatrix[aux][j] < distance[j])){
+                if(visited[j] == false && adjMatrix[aux][j] != 0 && distance[aux] != INF && (distance[aux] + adjMatrix[aux][j] < distance[j])){ // Se chequea, respectivamente, que ese índice no esté visitado, que los vértices estén conectados, que aux esté no sea un nodo desconectado, es decir, distinto de INF, y por último, que la distancia ya acumulada más la distancia en el arco sea menor al del nodo que se está iterando
 
                     distance[j] = distance[aux] + adjMatrix[aux][j]; // Se reemplaza valores en ese índice, el array va a ir cambiando
-                    lastDistance = distance[j]; // Me guarda la última distancia del array
+                    lastDistance = distance[j]; // Me guarda la última distancia que se agregó al array
                     vertexPath[j] = aux; // Me guarda los ÍNDICES de los nodos que se tomaron en cuenta como camino
-
-
-            if(aux == getVertexIndex(target.getName())){ // Me compara los int de los vértices, si aux es el vértice target, me ya tendríamos la distancia mínima calculada del for loop previo
-                toPrint = dijkPrint(source, vertexPath, lastDistance); // Se obtiene el return de esta función
-                return toPrint; // si se ingresa en este if, entonces logramos nuestro objetivo y se retorna el string para imprimir
+                } 
             }
-                } // Se chequea, respectivamente, que ese índice no esté visitado, que los vértices estén conectados, que aux esté no sea un nodo desconectado, es decir, distinto de INF, y por último, que la distancia ya acumulada más la distancia en el arco sea menor al del nodo que se está iterando
+            if(aux == target.getID()){ // Me compara los int de los vértices, si aux es el vértice target, ya tendríamos la distancia mínima calculada del for loop previo
+                toPrint = dijkPrint(source, target, vertexPath, lastDistance); // Se obtiene el return de esta función
+                return toPrint; // si se ingresa en este if, entonces logramos nuestro objetivo y se retorna el string para imprimir
             }
         }
 
@@ -500,7 +502,7 @@ public class Graph {
         int minimum = Integer.MAX_VALUE; // El mínimo se inicializa como MAX_VALUE para hacer la comparación más adelante
         int minIndexVertex = -1;  // Igualmente que el punto anterior;
 
-        for(int i = 0; i < vertexNumber; i++){
+        for(int i = 0; i < warehousesInGraph; i++){
             if(visited[i] == false && distance[i] < minimum){
                 minimum = distance[i];
                 minIndexVertex = i; // Aquí los valores se actualizan por el mínimo
@@ -514,20 +516,22 @@ public class Graph {
     
     /**
      * Método para generar el string a imprimir
-     * @param source nodo desde el cual se solicita la compra original
+     * @param source nodo a donde se realiza la solicitud de stock
+     * @param target nodo desde el cual se solicita la compra original
      * @param vertexPath array con el recorrido de los nodos que se ha realizado
      * @param lastDistance número entero con la distancia total
      * @return string con la información deseada
      * @author Ana Tovar
      */
-    public String dijkPrint(Warehouse source, int[]vertexPath, int lastDistance){
+    public String dijkPrint(Warehouse source, Warehouse target, int[]vertexPath, int lastDistance){
         String toPrintDik = "";
         toPrintDik += "Distancia total, " + lastDistance + "\n" + "El reccorido empieza en " + source.getName() + " Pasa por: " + "\n";
-        for(int vertexindex: vertexPath){
-            toPrintDik += (getVertex(vertexindex)).getName() + " -> ";
+        int aux = target.getID();
+        while (aux != -1){
+            toPrintDik += getVertex(aux).getName();
+            toPrintDik += (aux != source.getID())?  " <-- ": "\n";
+            aux = vertexPath[aux];
         }
-        toPrintDik += "//"; // Final del recorrido
-
         return toPrintDik;
     }
     
