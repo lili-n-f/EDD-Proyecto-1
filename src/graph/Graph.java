@@ -505,7 +505,7 @@ public class Graph {
      * @return índice del vértice con menor distancia
      * @author Ana Tovar
      */
-    public int minimumDistance(int[] distance, boolean[] visited){
+    private int minimumDistance(int[] distance, boolean[] visited){
         int minimum = Integer.MAX_VALUE; // El mínimo se inicializa como MAX_VALUE para hacer la comparación más adelante
         int minIndexVertex = -1;  // Igualmente que el punto anterior;
 
@@ -530,7 +530,7 @@ public class Graph {
      * @return string con la información deseada
      * @author Ana Tovar
      */
-    public String dijkPrint(Warehouse source, Warehouse target, int[]vertexPath, int lastDistance){
+    private String dijkPrint(Warehouse source, Warehouse target, int[]vertexPath, int lastDistance){
         String toPrintDik = "";
         toPrintDik += "Distancia total, " + lastDistance + "\n" + "El reccorido empieza en " + source.getName() + " Pasa por: " + "\n";
         int aux = target.getID();
