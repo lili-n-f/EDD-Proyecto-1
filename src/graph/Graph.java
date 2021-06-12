@@ -217,8 +217,12 @@ public class Graph {
                 if (this.isValidIndex(vertexIndex)){
                     if (this.isEliminationValid(vertexIndex)){
                         for (int i = vertexIndex; i<this.warehousesInGraph; i++){
-                            this.warehouses[i] = (i==warehousesInGraph-1)? null: this.warehouses[i+1];
-                            this.warehouses[i].setID(i);
+                            if (i==warehousesInGraph-1){
+                                this.warehouses[i] = null;
+                            }else{
+                                this.warehouses[i] =  this.warehouses[i+1];
+                                this.warehouses[i].setID(i);
+                            }
                         }
                         while (vertexIndex < this.warehousesInGraph){
                             for (int i = 0; i<this.warehousesInGraph; i++){
@@ -228,6 +232,7 @@ public class Graph {
                             vertexIndex++;
                         }
                         this.warehousesInGraph--;
+                        JOptionPane.showMessageDialog(null, "Almacén eliminado exitosamente.");
 
                     }else{
                             JOptionPane.showMessageDialog(null, "El almacén que se desea borrar no puede ser eliminado: deja al menos un almacén aislado.");

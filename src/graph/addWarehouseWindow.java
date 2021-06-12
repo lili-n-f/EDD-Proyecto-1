@@ -16,9 +16,9 @@ import javax.swing.JTextArea;
  */
 public class addWarehouseWindow extends javax.swing.JFrame {
 
-    String name;
-    String connectedWarehouse;
-    int distance;
+    public String name;
+    private String connectedWarehouse;
+    private int distance;
     public static Graph g;
     //quizá necesite poner un public static <nombre de la ventana anterior> prevWindow en todo
     
