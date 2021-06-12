@@ -26,6 +26,11 @@ public class Warehouse {
             this.stock = stock;
             this.ID = -1;
     }
+    
+    public Warehouse(String name){
+            this.name = name;
+            this.ID = -1;
+    }
 
     /**
      * Getter del atributo name: con él obtienes el nombre del almacén.

@@ -42,15 +42,32 @@ public class Graph {
      */
     public int getVertexIndex(String name){ //OJO! los nombres deben ser únicos
 		for (Warehouse warehouse : this.warehouses){
-                    if (warehouse.getName().equals(name)){
-                        return warehouse.getID();
+                    if (warehouse != null){
+                        if(warehouse.getName().equals(name)){
+                            return warehouse.getID();
+                        }
                     }
 		}
 		return -1;
 	}
 
+    
         
-        
+    /**
+     * Método que determina si un nombre pasado por parámetro es válido para un nuevo almacén (es decir, que el nombre sea distinto a los nombres de los almacenes anteriores)
+     * @param name nombre de un posible nuevo almacén del cual se busca saber si es válido
+     * @return false si el mismo se encuentra en el array de almacenes en el grafo (el índice que devuelve getVertexIndex es distinto a -1), o verdadero si el nombre del almacén no existe en el grafo.
+     */
+    public boolean isValidNewWarehouseName(String name){
+        if (warehousesInGraph>0){
+            return this.getVertexIndex(name) == -1; //como getVertexIndex retorna -1 cuando no se encuentra un almacén en el grafo con el nombre indicado, el nombre ingresado es válido para un nuevo almacén si el método regresa -1
+        }else{
+            return true; //si no hay ningún almacén, cualquier nombre es válido
+        } 
+    }
+
+    
+    
     /**
      * Método que permite saber si un índice (para el array de almacenes o la matriz de adyacencia) es válido (está entre 0, incluido, y la cantidad de almacenes en el grafo, sin incluir)
      * @param index índice del cual se quiere conocer su validez
@@ -67,9 +84,6 @@ public class Graph {
      * @param newWarehouse nuevo almacén que se pretende agregar al grafo.
      */
     public void addVertex(Warehouse newWarehouse){
-        if (this.getVertexIndex(newWarehouse.getName()) != -1){ //los nombres de los almacenes deben ser únicos, por lo que si se consigue un índice válido (distinto a -1) para algún almacén ya en el grafo, quiere decir que ya existe un almacén con dicho nombre.
-                JOptionPane.showMessageDialog(null, "El almacén ya se encuentra en el grafo.");
-        }else{
                 this.warehousesInGraph++;
                 if (this.warehousesInGraph > vertexNumber){
                         this.addExtraWarehouse();
@@ -77,8 +91,8 @@ public class Graph {
                 newWarehouse.setID(this.warehousesInGraph-1); //se resta 1 al número de almacenes ya presentes en el grafo para darle al nuevo almacén su identificación ya que la misma representa el índice de la fila y columna asociado a dicho almacén (así como de su posición en el array de almacenes), el cual debe tener un valor entre 0 y la cantidad total de almacenes en el grafo -1.
 
                 this.warehouses[warehousesInGraph-1] = newWarehouse;
-        }
-	}
+    }
+	
 
     
     
@@ -108,7 +122,9 @@ public class Graph {
 
             if (distance > 0){
                 if (this.isValidIndex(vertexIndexA) && this.isValidIndex(vertexIndexB)){
-                        adjMatrix[vertexIndexA][vertexIndexB] = distance;
+                    
+                    adjMatrix[vertexIndexA][vertexIndexB] = distance;
+               
                 }else{
                         JOptionPane.showMessageDialog(null, "Vértice(s) inválido(s).");
                 }
@@ -120,7 +136,44 @@ public class Graph {
         }
     }
 
+    /**
+     * Método que determina si dos vértices están conectados en el grafo.
+     * @param nameA nombre del vértice A (de donde sale el arco que se añadirá)
+     * @param nameB nombre del vértice B (a donde entra el arco que se añadirá)
+     * @return true si los vértices están conectados (la distancia representada en la matriz de adyacencia es válida), false si no lo están (la distancia representada en la matriz de adyacencia es 0, o alguno de los vértices ingresados no está en el grafo).
+     */
+    public boolean areConnected(String nameA, String nameB){
+        int vertexIndexA = this.getVertexIndex(nameA);
+        int vertexIndexB = this.getVertexIndex(nameB);
+        if (this.isValidIndex(vertexIndexA) && this.isValidIndex(vertexIndexB)){
+            return (adjMatrix[vertexIndexA][vertexIndexB] != 0);
+        }else{
+            return false;
+        }
+    }
     
+    
+    /**
+     * Método que evalúa si en el grafo no hay almacenes aislados (es decir, que algún almacén no tenga entradas o salidas) en la totalidad del grafo. 
+     * @return true si no hay almacenes aislados, false si hay almacenes aislados.
+     */
+    public boolean noWarehousesIsolated(){
+        int lineSum, columnSum;
+        for (int i = 0; i<this.warehousesInGraph; i++){
+            lineSum = 0;
+            columnSum = 0;
+            for (int j = 0; j<this.warehousesInGraph; j++){
+                    lineSum += adjMatrix[i][j];
+                    columnSum += adjMatrix[j][i];
+            }
+            if (lineSum == 0 || columnSum == 0){ //lo 1ro significa que algún vértice no tiene salidas; lo 2do significa que algún vértice no tiene entradas.
+                return false;
+            }
+        }
+        return true; 
+    }
+
+
     
     /**
      * Método para expandir el número máximo de vértices que tiene el grafo en 1 unidad. Se crean una nueva matriz de adyacencia (con una fila y una columna más) y un nuevo array de almacenes.
@@ -139,6 +192,19 @@ public class Graph {
         this.warehouses = newWarehouses;
 	}
 
+    /**
+     * Método que devuelve los nombres de cada almacén en el grafo.
+     * @return cadena con los nombres de cada almacén en el grafo.
+     */
+    public String getWarehouseNames(){
+        String warehouseNames = "";
+        for (Warehouse warehouse : this.warehouses){
+            if (warehouse != null){
+                warehouseNames += warehouse.getName() + "\n";
+            }
+        }
+        return warehouseNames;
+    }
     
     
     /**
@@ -150,15 +216,6 @@ public class Graph {
 		
                 if (this.isValidIndex(vertexIndex)){
                     if (this.isEliminationValid(vertexIndex)){
-                        /*
-                        for (int [] line : this.adjMatrix){
-                                line[vertexIndex-1] = 0;
-                        }
-                        for (int i = 0; i < this.warehousesInGraph; i++){
-                                this.adjMatrix[vertexIndex-1][i] = 0;
-                        }
-                        this.warehousesInGraph--;
-                        */
                         for (int i = vertexIndex; i<this.warehousesInGraph; i++){
                             this.warehouses[i] = (i==warehousesInGraph-1)? null: this.warehouses[i+1];
                             this.warehouses[i].setID(i);
@@ -194,7 +251,7 @@ public class Graph {
             lineSum = 0;
             columnSum = 0;
             if (i != vertexIndex){
-                for (int j = 0; i<this.warehousesInGraph; j++){
+                for (int j = 0; j<this.warehousesInGraph; j++){
                     if (j != vertexIndex){	
                         lineSum += adjMatrix[i][j];
                         columnSum += adjMatrix[j][i];
