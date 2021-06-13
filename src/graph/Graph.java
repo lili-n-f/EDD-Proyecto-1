@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
  */
 public class Graph {
 
-    Warehouse[] warehouses;
+    WarehouseList warehouses;
     int [][] adjMatrix;
     int vertexNumber; 
     int warehousesInGraph; //esto es la cantidad de nodos ya en la matriz de adyacencia
@@ -22,7 +22,7 @@ public class Graph {
      */
     public Graph(int vertexNumber){
 		this.vertexNumber = vertexNumber;
-		this.warehouses = new Warehouse[vertexNumber]; 
+		this.warehouses = new WarehouseList(); 
 		this.adjMatrix = new int[vertexNumber][vertexNumber];
 		this.warehousesInGraph = 0;
 		for (int i=0; i<vertexNumber; i++){
@@ -41,7 +41,7 @@ public class Graph {
      * @return el índice del almacén si el mismo se encuentra en el array de almacenes en el grafo, o -1 si el almacén buscado no existe en el grafo.
      */
     public int getVertexIndex(String name){ //OJO! los nombres deben ser únicos
-		for (Warehouse warehouse : this.warehouses){
+		for (int i = 0; i<warehouses.getSize(); i++){
                     if (warehouse != null){
                         if(warehouse.getName().equals(name)){
                             return warehouse.getID();
@@ -192,6 +192,8 @@ public class Graph {
         this.warehouses = newWarehouses;
 	}
 
+    
+    
     /**
      * Método que devuelve los nombres de cada almacén en el grafo.
      * @return cadena con los nombres de cada almacén en el grafo.
@@ -205,6 +207,7 @@ public class Graph {
         }
         return warehouseNames;
     }
+    
     
     
     /**
@@ -294,13 +297,7 @@ public class Graph {
             aux = queue.getHead();
             queue.dequeue(); // Se hace dequeue porque igualmente se anexarán otros nodos más adelante por lo que no sale del while, el que usamos para entrar no nos interesa porque ya quedó registrado
             
-            toPrint += "Almacén " + aux.getName() + "\n";
-            Product[] products = aux.getStock();
-            for (Product product : products) {
-
-                toPrint += product.getName() + " x" + product.getAmmount() + "\n";
-
-            }
+            toPrint += aux.showStock();
             
             for(int i=0; i < warehousesInGraph; i++){
 
@@ -383,11 +380,8 @@ public class Graph {
         stack.push(getVertex(0)); // Los nodos visitados entrarán aquí; ahora usamos el stack
         visited[0] = true;
         
-        toPrint += "Almacén " + getVertex(0).getName() + "\n";
-        Product[] products = getVertex(0).getStock();
-        for (Product product : products) {
-            toPrint += product.getName() + " x" + product.getAmmount() + "\n"; // Este print es "único" en el sentido que solo se hace para el vértice de menor índice, porque los otros se harán dentro del for loop siguiente
-        }
+        toPrint += getVertex(0).showStock(); // Este print es "único" en el sentido que solo se hace para el vértice de menor índice, porque los otros se harán dentro del for loop siguiente
+        
 
         while (!stack.isEmpty()){
             
@@ -402,12 +396,8 @@ public class Graph {
                     visited[i] = true; //Esto settea los vértices ya visitados como true, ya que esa es la condición que vamos a revisar.
                     
                     aux = getVertex(i); // "Salta" al siguiente nodo inmediatamente
-                    products = aux.getStock(); // Cambia el array de productos por almacén
                     
-                    toPrint += "Almacén " + aux.getName() + "\n"; // Nueva adición al toPrint, ya que si se incluye en el while, habrían duplicados.                        
-                    for (Product product : products) {
-                        toPrint += product.getName() + " x" + product.getAmmount() + "\n";
-                    }
+                    toPrint += aux.showStock(); // Nueva adición al toPrint, ya que si se incluye en el while, habrían duplicados.
 
                     i = -1; // "Se reinicia el contador", -1 ya que gracias al i++ se convertirá en 0
                 }

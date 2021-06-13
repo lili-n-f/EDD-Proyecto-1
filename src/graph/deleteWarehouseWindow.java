@@ -42,24 +42,24 @@ public class deleteWarehouseWindow extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         bExistingWarehouses = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         nameTxt = new javax.swing.JTextField();
         bDelete = new javax.swing.JButton();
         bBack = new javax.swing.JButton();
-
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel1.setText("ELIMINAR UN ALMACÉN");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 10, -1, -1));
-        getContentPane().add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 270, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 10, -1, -1));
+        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 300, -1));
 
         bExistingWarehouses.setText("Ver almacenes preexistentes");
         bExistingWarehouses.addActionListener(new java.awt.event.ActionListener() {
@@ -67,20 +67,17 @@ public class deleteWarehouseWindow extends javax.swing.JFrame {
                 bExistingWarehousesActionPerformed(evt);
             }
         });
-        getContentPane().add(bExistingWarehouses, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 40, -1, 30));
-        getContentPane().add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 270, -1));
+        jPanel1.add(bExistingWarehouses, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 40, -1, 30));
+        jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 300, -1));
 
-        jLabel2.setText("realizará.");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, -1, -1));
+        jLabel3.setText("A continuación, escribe el nombre del almacén que ");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, -1, -1));
 
-        jLabel3.setText("A continuación, escribe el nombre del almacén que deseas");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, -1, -1));
-
-        jLabel4.setText("eliminar. Si la eliminación deja almacenes aislados, no se");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, -1, -1));
+        jLabel4.setText("deseas eliminar. Si la eliminación deja almacenes ");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, -1, -1));
 
         nameTxt.setText("Ingresa el nombre del almacén");
-        getContentPane().add(nameTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(78, 160, 170, -1));
+        jPanel1.add(nameTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 170, 170, -1));
 
         bDelete.setText("ELIMINAR");
         bDelete.addActionListener(new java.awt.event.ActionListener() {
@@ -88,10 +85,15 @@ public class deleteWarehouseWindow extends javax.swing.JFrame {
                 bDeleteActionPerformed(evt);
             }
         });
-        getContentPane().add(bDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 190, -1, -1));
+        jPanel1.add(bDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 200, -1, -1));
 
         bBack.setText("< Volver");
-        getContentPane().add(bBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, -1, -1));
+        jPanel1.add(bBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 250, -1, -1));
+
+        jLabel2.setText("aislados, no se realizará.");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 140, -1, -1));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 360, 300));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -100,7 +102,7 @@ public class deleteWarehouseWindow extends javax.swing.JFrame {
         JTextArea text = new JTextArea(g.getWarehouseNames());
         text.setLineWrap(true);
         JScrollPane scrollPane = new JScrollPane(text);  
-        scrollPane.setPreferredSize(new Dimension(400, 300));
+        scrollPane.setPreferredSize(new Dimension(200, 300));
         JOptionPane.showMessageDialog(null, scrollPane, "Almacenes", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_bExistingWarehousesActionPerformed
 

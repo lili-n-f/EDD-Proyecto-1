@@ -53,7 +53,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">
           <Properties>
-            <Property name="text" type="java.lang.String" value="El mismo debe ser &#xda;NICO (no debe haber dos con igual nombre) "/>
+            <Property name="text" type="java.lang.String" value="El mismo debe ser &#xda;NICO."/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -63,7 +63,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Primero, ingresa un nombre para el almac&#xe9;n (ejemplo: A, B, C...)"/>
+            <Property name="text" type="java.lang.String" value="Primero, ingresa un nombre para el almac&#xe9;n (ejemplo: A, B...)."/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -120,7 +120,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel4">
           <Properties>
-            <Property name="text" type="java.lang.String" value="los almacenes ya existentes. Toma en cuenta que el almac&#xe9;n debe"/>
+            <Property name="text" type="java.lang.String" value=" y algunos almacenes ya existentes. El almac&#xe9;n debe"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -130,7 +130,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Luego, ingresa las conexiones entre tu nuevo almac&#xe9;n y el resto de"/>
+            <Property name="text" type="java.lang.String" value="Luego, ingresa las conexiones entre tu nuevo almac&#xe9;n"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">

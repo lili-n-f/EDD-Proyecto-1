@@ -84,10 +84,10 @@ public class addWarehouseWindow extends javax.swing.JFrame {
         jLabel1.setText("AGREGAR UN NUEVO ALMACÉN");
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 10, 230, 20));
 
-        jLabel2.setText("El mismo debe ser ÚNICO (no debe haber dos con igual nombre) ");
+        jLabel2.setText("El mismo debe ser ÚNICO.");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, -1, -1));
 
-        jLabel3.setText("Primero, ingresa un nombre para el almacén (ejemplo: A, B, C...)");
+        jLabel3.setText("Primero, ingresa un nombre para el almacén (ejemplo: A, B...).");
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
         jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, 298, 10));
 
@@ -120,10 +120,10 @@ public class addWarehouseWindow extends javax.swing.JFrame {
         });
         jPanel1.add(bExistingWarehouses, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 40, -1, 30));
 
-        jLabel4.setText("los almacenes ya existentes. Toma en cuenta que el almacén debe");
+        jLabel4.setText(" y algunos almacenes ya existentes. El almacén debe");
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, -1, -1));
 
-        jLabel5.setText("Luego, ingresa las conexiones entre tu nuevo almacén y el resto de");
+        jLabel5.setText("Luego, ingresa las conexiones entre tu nuevo almacén");
         jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, -1, 20));
 
         jLabel6.setText("tener como mínimo una entrada y una salida para ser válido.");
@@ -178,7 +178,7 @@ public class addWarehouseWindow extends javax.swing.JFrame {
         JTextArea text = new JTextArea(g.getWarehouseNames());
         text.setLineWrap(true);
         JScrollPane scrollPane = new JScrollPane(text);  
-        scrollPane.setPreferredSize(new Dimension(400, 300));
+        scrollPane.setPreferredSize(new Dimension(200, 300));
         JOptionPane.showMessageDialog(null, scrollPane, "Almacenes", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_bExistingWarehousesActionPerformed
 
