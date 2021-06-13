@@ -17,18 +17,20 @@ import javax.swing.JTextArea;
 public class addWarehouseWindow extends javax.swing.JFrame {
 
     public String name;
+    public Warehouse w;
     private String connectedWarehouse;
     private int distance;
     public static Graph g;
-    //quizá necesite poner un public static <nombre de la ventana anterior> prevWindow en todo
+    public static mainWindow prevWindow;
     
     /**
      * Constructor de addWarehouseWindow
      */
     /** Creates new form addWarehouseWindow */
-    public addWarehouseWindow(Graph g) {
+    public addWarehouseWindow(Graph g, mainWindow prevWindow) {
         initComponents();
         this.g = g;
+        this.prevWindow = prevWindow;
         this.setVisible(true);
         nameTxt.setEnabled(true);
         bSubmitName.setEnabled(true);
@@ -146,12 +148,12 @@ public class addWarehouseWindow extends javax.swing.JFrame {
                 bOutActionPerformed(evt);
             }
         });
-        jPanel1.add(bOut, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 320, 130, -1));
+        jPanel1.add(bOut, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 320, 140, -1));
 
         jLabel8.setText("Distancia:");
         jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 280, -1, 20));
 
-        sDistance.setModel(new javax.swing.SpinnerNumberModel(0, 0, 2147483647, 1));
+        sDistance.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
         sDistance.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 sDistanceKeyTyped(evt);
@@ -168,6 +170,11 @@ public class addWarehouseWindow extends javax.swing.JFrame {
         jPanel1.add(bIn, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, -1, -1));
 
         bContinue.setText("Continuar");
+        bContinue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bContinueActionPerformed(evt);
+            }
+        });
         jPanel1.add(bContinue, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 360, -1, -1));
         jPanel1.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(17, 32, 298, 10));
 
@@ -198,7 +205,7 @@ public class addWarehouseWindow extends javax.swing.JFrame {
         }else{
             name = nameTxt.getText();
             if (!g.warehouses.isWarehouseInList(name)){
-                Warehouse w = new Warehouse(name);
+                w = new Warehouse(name);
                 nameTxt.setEnabled(false);
                 bSubmitName.setEnabled(false);
                 bSubmitName.setToolTipText("El nombre del almacén ya fue escogido.");
@@ -226,8 +233,8 @@ public class addWarehouseWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_connectedWarehouseTxtActionPerformed
 
     private void bInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bInActionPerformed
-        if(connectedWarehouseTxt.getText().isBlank() || connectedWarehouseTxt.getText().isEmpty() || (Integer)sDistance.getValue()==0){
-            JOptionPane.showMessageDialog(null, "Valide sus datos. Debe ingresar el nombre de un almacén al que se conecta y la distancia entre ellos (que debe ser mayor que 0).");
+        if(connectedWarehouseTxt.getText().isBlank() || connectedWarehouseTxt.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Valide sus datos. Debe ingresar el nombre de un almacén al que se conecta y la distancia entre ellos (que debe ser mayor que 0)");
         }else{
             connectedWarehouse = connectedWarehouseTxt.getText();
             distance = (Integer)(sDistance.getValue());
@@ -242,7 +249,7 @@ public class addWarehouseWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_bInActionPerformed
 
     private void bOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bOutActionPerformed
-        if(connectedWarehouseTxt.getText().isBlank() || connectedWarehouseTxt.getText().isEmpty() || (Integer)sDistance.getValue()==0){
+        if(connectedWarehouseTxt.getText().isBlank() || connectedWarehouseTxt.getText().isEmpty()){
             JOptionPane.showMessageDialog(null, "Valide sus datos. Debe ingresar el nombre de un almacén al que se conecta y la distancia entre ellos (que debe ser mayor que 0).");
         }else{
             connectedWarehouse = connectedWarehouseTxt.getText();
@@ -260,6 +267,11 @@ public class addWarehouseWindow extends javax.swing.JFrame {
     private void sDistanceKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sDistanceKeyTyped
         // TODO add your handling code here:
     }//GEN-LAST:event_sDistanceKeyTyped
+
+    private void bContinueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bContinueActionPerformed
+        stockAdministrationWindow nextWindow = new stockAdministrationWindow(g, prevWindow, w);
+        this.dispose();
+    }//GEN-LAST:event_bContinueActionPerformed
 
 
     /**
@@ -292,7 +304,7 @@ public class addWarehouseWindow extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new addWarehouseWindow(g).setVisible(true);
+                new addWarehouseWindow(g, prevWindow).setVisible(true);
             }
         });
     }

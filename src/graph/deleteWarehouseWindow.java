@@ -12,16 +12,19 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 /**
- *
- * @author lilin
+ * Clase de la ventana de eliminación de un almacén.
+ * @author Liliana Nóbrega
  */
 public class deleteWarehouseWindow extends javax.swing.JFrame {
 
     public static Graph g;
+    public static mainWindow prevWindow;
+    
     /** Creates new form deleteWarehouseWindow */
-    public deleteWarehouseWindow(Graph g) {
+    public deleteWarehouseWindow(Graph g, mainWindow prevWindow) {
         initComponents();
         this.g = g;
+        this.prevWindow = prevWindow;
         this.setVisible(true);
         this.setLocationRelativeTo(null);
         bExistingWarehouses.setToolTipText("Haz click aquí para ver los nombres de los almacenes ya existentes.");
@@ -88,6 +91,11 @@ public class deleteWarehouseWindow extends javax.swing.JFrame {
         jPanel1.add(bDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 200, -1, -1));
 
         bBack.setText("< Volver");
+        bBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bBackActionPerformed(evt);
+            }
+        });
         jPanel1.add(bBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 250, -1, -1));
 
         jLabel2.setText("aislados, no se realizará.");
@@ -99,7 +107,7 @@ public class deleteWarehouseWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bExistingWarehousesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bExistingWarehousesActionPerformed
-        JTextArea text = new JTextArea(g.getWarehouseNames());
+        JTextArea text = new JTextArea(g.warehouses.getWarehouseNames());
         text.setLineWrap(true);
         JScrollPane scrollPane = new JScrollPane(text);  
         scrollPane.setPreferredSize(new Dimension(200, 300));
@@ -113,6 +121,11 @@ public class deleteWarehouseWindow extends javax.swing.JFrame {
             g.deleteWarehouse(nameTxt.getText());
         }
     }//GEN-LAST:event_bDeleteActionPerformed
+
+    private void bBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBackActionPerformed
+        prevWindow.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_bBackActionPerformed
 
     /**
      * @param args the command line arguments
@@ -144,7 +157,7 @@ public class deleteWarehouseWindow extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new deleteWarehouseWindow(g).setVisible(true);
+                new deleteWarehouseWindow(g, prevWindow).setVisible(true);
             }
         });
     }

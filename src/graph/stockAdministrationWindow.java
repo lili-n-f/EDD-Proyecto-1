@@ -18,13 +18,15 @@ public class stockAdministrationWindow extends javax.swing.JFrame {
 
     public Warehouse w;
     public static Graph g;
+    public static mainWindow prevWindow;
     
     /** Creates new form stockAdministrationWindow */
-    public stockAdministrationWindow(Graph g) {
+    public stockAdministrationWindow(Graph g, mainWindow prevWindow) {
         initComponents();
         this.setVisible(true);
         this.setLocationRelativeTo(null);
         this.g = g;
+        this.prevWindow = prevWindow;
         bSubmitName.setEnabled(true);
         nameTxt.setEnabled(true);
         bExistingProducts.setEnabled(false);
@@ -38,11 +40,35 @@ public class stockAdministrationWindow extends javax.swing.JFrame {
         nameTxt.setToolTipText("Tip: para asegurarte de que estás introduciendo el nombre de un almacén existente, puedes ver los almacenes preexistentes.");
         bExistingProducts.setToolTipText("Debes ingresar el nombre del almacén escogido para desbloquear estas opciones.");
         newProductTxt.setText("Debes ingresar el nombre del almacén.");
-        existingProductTxt.setText("Debes ingresar el nombre del almacén.")
+        existingProductTxt.setText("Debes ingresar el nombre del almacén.");
         sNewProductAmmount.setToolTipText("Debes ingresar el nombre del almacén escogido para desbloquear estas opciones.");
         sExistingProductAmmount.setToolTipText("Debes ingresar el nombre del almacén escogido para desbloquear estas opciones.");
         bAddNewProduct.setToolTipText("Debes ingresar el nombre del almacén escogido para desbloquear estas opciones.");
         bIncreaseProduct.setToolTipText("Debes ingresar el nombre del almacén escogido para desbloquear estas opciones.");
+    }
+    
+    public stockAdministrationWindow(Graph g, mainWindow prevWindow, Warehouse newW){ //se llama a este constructor cuando se crea un nuevo almacén (el cual se pasa como parámetro), con el fin de llenar el stock de este nuevo almacén.
+        initComponents();
+        this.setVisible(true);
+        this.setLocationRelativeTo(null);
+        this.g = g;
+        this.prevWindow = prevWindow;
+        this.w = newW;
+        bBack.setEnabled(false);
+        bSubmitName.setEnabled(false);
+        nameTxt.setEnabled(false);
+        bExistingProducts.setEnabled(true);
+        newProductTxt.setEnabled(true);
+        sNewProductAmmount.setEnabled(true);
+        bAddNewProduct.setEnabled(true);
+        existingProductTxt.setEnabled(true);
+        sExistingProductAmmount.setEnabled(true);
+        bIncreaseProduct.setEnabled(true);
+        bSubmitName.setToolTipText("El almacén ya fue escogido.");
+        nameTxt.setText("El almacén ya fue escogido.");
+        bExistingProducts.setToolTipText("Haz click aquí para ver los productos que tiene el almacén "+w.getName()+" en su stock.");
+        newProductTxt.setText("Ingrese el nombre del producto");
+        existingProductTxt.setText("Ingrese el nombre del producto");
     }
 
     /** This method is called from within the constructor to
@@ -77,7 +103,7 @@ public class stockAdministrationWindow extends javax.swing.JFrame {
         sExistingProductAmmount = new javax.swing.JSpinner();
         bIncreaseProduct = new javax.swing.JButton();
         bSubmitName = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        bBack = new javax.swing.JButton();
         bExistingProducts = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -102,22 +128,27 @@ public class stockAdministrationWindow extends javax.swing.JFrame {
         jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 300, -1));
 
         jLabel2.setText("manejar: ");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, -1, -1));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, -1, -1));
 
         jLabel3.setText("Primero, ingrese el nombre del almacén cuyo stock desea");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 90, -1, -1));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
 
         nameTxt.setText("Ingrese el nombre del almacén");
+        nameTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nameTxtActionPerformed(evt);
+            }
+        });
         jPanel1.add(nameTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 110, 230, -1));
         jPanel1.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 170, 300, 10));
 
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel6.setText("Ingrese el nombre del nuevo producto que desea añadir y");
-        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, -1, 20));
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, 20));
 
         jLabel7.setText("y la cantidad que añadirá:");
-        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, -1, -1));
+        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, -1));
 
         newProductTxt.setText("Ingrese el nombre del producto");
         jPanel2.add(newProductTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, 220, -1));
@@ -133,15 +164,15 @@ public class stockAdministrationWindow extends javax.swing.JFrame {
         });
         jPanel2.add(bAddNewProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 80, 190, -1));
 
-        jTabbedPane1.addTab("Añadir producto NUEVO", jPanel2);
+        jTabbedPane1.addTab("Producto NUEVO", jPanel2);
 
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel4.setText("y la cantidad que añadirá:");
-        jPanel3.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, -1, -1));
+        jPanel3.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, -1));
 
         jLabel5.setText("Ingrese el nombre del producto del cual aumentará el stock");
-        jPanel3.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, -1, 20));
+        jPanel3.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, 20));
 
         existingProductTxt.setText("Ingrese el nombre del producto");
         jPanel3.add(existingProductTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, 220, -1));
@@ -155,11 +186,11 @@ public class stockAdministrationWindow extends javax.swing.JFrame {
                 bIncreaseProductActionPerformed(evt);
             }
         });
-        jPanel3.add(bIncreaseProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 80, 190, -1));
+        jPanel3.add(bIncreaseProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 80, 230, -1));
 
-        jTabbedPane1.addTab("Aumentar producto EXISTENTE", jPanel3);
+        jTabbedPane1.addTab("Producto EXISTENTE", jPanel3);
 
-        jPanel1.add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 360, 150));
+        jPanel1.add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 220, 360, 150));
 
         bSubmitName.setText("Escoger almacén");
         bSubmitName.addActionListener(new java.awt.event.ActionListener() {
@@ -169,8 +200,13 @@ public class stockAdministrationWindow extends javax.swing.JFrame {
         });
         jPanel1.add(bSubmitName, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 140, -1, -1));
 
-        jButton3.setText("< Volver");
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 370, -1, -1));
+        bBack.setText("< Volver");
+        bBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bBackActionPerformed(evt);
+            }
+        });
+        jPanel1.add(bBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 370, -1, -1));
 
         bExistingProducts.setText("Ver productos de almacén");
         bExistingProducts.addActionListener(new java.awt.event.ActionListener() {
@@ -178,7 +214,7 @@ public class stockAdministrationWindow extends javax.swing.JFrame {
                 bExistingProductsActionPerformed(evt);
             }
         });
-        jPanel1.add(bExistingProducts, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 180, 160, -1));
+        jPanel1.add(bExistingProducts, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 180, 200, 30));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 360, 400));
 
@@ -186,7 +222,7 @@ public class stockAdministrationWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bExistingWarehousesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bExistingWarehousesActionPerformed
-        JTextArea text = new JTextArea(g.getWarehouseNames());
+        JTextArea text = new JTextArea(g.warehouses.getWarehouseNames());
         text.setLineWrap(true);
         JScrollPane scrollPane = new JScrollPane(text);
         scrollPane.setPreferredSize(new Dimension(200, 300));
@@ -197,9 +233,8 @@ public class stockAdministrationWindow extends javax.swing.JFrame {
         if(nameTxt.getText().isBlank() || nameTxt.getText().isEmpty()){
             JOptionPane.showMessageDialog(null, "Debe ingresar un nombre antes de continuar.");
         }else{
-            
-            if(g.isValidIndex(g.getVertexIndex(nameTxt.getText()))){
-                w = g.getVertex(g.getVertexIndex(nameTxt.getText()));
+            w = g.warehouses.getWarehouse(nameTxt.getText());
+            if(w != null){
                 bExistingProducts.setEnabled(true);
                 newProductTxt.setEnabled(true);
                 sNewProductAmmount.setEnabled(true);
@@ -213,7 +248,7 @@ public class stockAdministrationWindow extends javax.swing.JFrame {
                 nameTxt.setText("El almacén ya fue escogido.");
                 bExistingProducts.setToolTipText("Haz click aquí para ver los productos que tiene el almacén "+w.getName()+" en su stock.");
                 newProductTxt.setText("Ingrese el nombre del producto");
-                existingProductTxt.setText("Ingrese el nombre del producto")
+                existingProductTxt.setText("Ingrese el nombre del producto");
                 sNewProductAmmount.setToolTipText(null);
                 sExistingProductAmmount.setToolTipText(null);
                 bAddNewProduct.setToolTipText(null);
@@ -236,17 +271,34 @@ public class stockAdministrationWindow extends javax.swing.JFrame {
         if(existingProductTxt.getText().isBlank() || existingProductTxt.getText().isEmpty()){
             JOptionPane.showMessageDialog(null, "Debe ingresar el nombre del producto antes de continuar.");
         }else{
-            w.increaseProductStock(existingProductTxt.getText(), sExistingProductAmmount);
+            w.getStock().increaseProductStock(existingProductTxt.getText(), (Integer)sExistingProductAmmount.getValue());
         }
     }//GEN-LAST:event_bIncreaseProductActionPerformed
 
     private void bAddNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddNewProductActionPerformed
-        if(existingProductTxt.getText().isBlank() || existingProductTxt.getText().isEmpty()){
+        if(newProductTxt.getText().isBlank() || newProductTxt.getText().isEmpty()){
             JOptionPane.showMessageDialog(null, "Debe ingresar el nombre del producto antes de continuar.");
         }else{
-            //TODO
+            if (!w.getStock().isProductInList(newProductTxt.getText())){
+                //OJOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO Si hacemos una lista de productos totales, es necesario actualizarla también!!!!!!!!!!!!!
+                w.getStock().addNewProductToStock(newProductTxt.getText(), (Integer)sNewProductAmmount.getValue());
+                if (!bBack.isEnabled() && !w.getStock().isEmpty()){
+                    bBack.setEnabled(true);
+                }
+            }else{
+                JOptionPane.showMessageDialog(null, "El producto ingresado no es nuevo: ya se encuentra en el stock. Para aumentar productos existentes, haga click en la otra pestaña.");
+            }
         }
     }//GEN-LAST:event_bAddNewProductActionPerformed
+
+    private void bBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBackActionPerformed
+        prevWindow.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_bBackActionPerformed
+
+    private void nameTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nameTxtActionPerformed
 
     /**
      * @param args the command line arguments
@@ -278,19 +330,19 @@ public class stockAdministrationWindow extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new stockAdministrationWindow(g).setVisible(true);
+                new stockAdministrationWindow(g, prevWindow).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAddNewProduct;
+    private javax.swing.JButton bBack;
     private javax.swing.JButton bExistingProducts;
     private javax.swing.JButton bExistingWarehouses;
     private javax.swing.JButton bIncreaseProduct;
     private javax.swing.JButton bSubmitName;
     private javax.swing.JTextField existingProductTxt;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

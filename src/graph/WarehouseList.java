@@ -159,6 +159,7 @@ public class WarehouseList extends List<Warehouse>{
             if (aux.getName().equals(name)){
                 return aux;
             }
+            aux = aux.getNext();
         }
         return null;
     
@@ -175,6 +176,7 @@ public class WarehouseList extends List<Warehouse>{
             if (aux.getID() == i){
                 return aux;
             }
+            aux = aux.getNext();
         }
         return null;
     }
