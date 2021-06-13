@@ -342,7 +342,7 @@ public class Graph {
 
             for(int i=1; i < vertexNumber; i++){ // En este caso i empieza desde 1 ya que comencé desde 0
 
-                if(adjMatrix[getVertexIndex(aux.getName())][i] != 0 && visited[i] == false){ // getVetexIndex -1???  o i-1??? ya que los indices comienzan en 0(?)
+                if(adjMatrix[(aux.getID())][i] != 0 && visited[i] == false){ // getVetexIndex -1???  o i-1??? ya que los indices comienzan en 0(?)
 
                     queue.inqueue(warehouses.getNode(i)); // Me añade al queue
                     visited[i] = true; //Esto settea los vértices ya visitados como true, ya que esa es la condición que vamos a revisar.
@@ -471,20 +471,20 @@ public class Graph {
      * @author Ana Tovar
      */     
     public WarehouseList availability(Product request){
+        
         WarehouseList available = new WarehouseList(); // se crea una array nuevo, con valores null inicialmente
+        
         for(int index = 0; index < available.getSize(); index++){
             
             ProductList products = warehouses.getNode(index).getStock();
             
-            for(int j = 0; j < products.getSize(); j++){
+            Product product = products.getProductWithName(request.getName());
                 
-                Product product = products.getNode(j);
-                
-                if(product.getName().equals(request.getName()) && product.getAmmount() >= request.getAmmount()){ // Se confirma que el almacén tenga no solo el producto sino la cantidad necesaria de este
+                if(product != null && product.getAmmount() >= request.getAmmount()){ // Se confirma que el almacén tenga no solo el producto sino la cantidad necesaria de este
                     available.addLast(warehouses.getNode(index));
                 }
             }
-        }
+  
         if(available.isEmpty()){
             JOptionPane.showMessageDialog(null, "No hay ningún almacén que tenga más stock del producto."); // Esto lo que verifica es que si no hay ningún dato en la lista available, es porque ningún almacén cumple con los requisitos para que se solicite dicho producto
             return null;
@@ -663,105 +663,102 @@ public class Graph {
         String receipt = "";
         
         ProductList products = shop.getStock();
+        
+        Product product = products.getProductWithName(shopping.getName());
 
-        for(int i = 0; i < products.getSize(); i++){
+        if(product != null && product.getAmmount() >= shopping.getAmmount()){ // Si todo va perfecto, se hace el cambio inmediatamente
+
+            product.sellProduct(shopping.getAmmount());
             
-            Product product = products.getNode(i);
+            receipt = shopping.getName() + " x" + shopping.getAmmount() + "\n";
+            
+            return receipt;
 
-            if(product.getName().equalsIgnoreCase(shopping.getName()) && product.getAmmount() >= shopping.getAmmount()){ // Si todo va perfecto, se hace el cambio inmediatamente
+        } else if (product != null && product.getAmmount() < shopping.getAmmount()){ // O un else simple? Para discutir
+
+            Product request = new Product(shopping.getName(), (shopping.getAmmount() - product.getAmmount())); // Producto a comparar. Se guarda para mejor manejo
+
+            Warehouse requestShop = null; // Almacén definitivo
+
+            WarehouseList available = availability(request); // Lista de candidatos
+
+            if(available == null){
                 
-                
-                receipt += shopping.getName() + " x" + shopping.getAmmount() + "\n";
-                product.sellProduct(shopping.getAmmount());
-                
-                
-            } else if (product.getName().equalsIgnoreCase(shopping.getName()) && product.getAmmount() < shopping.getAmmount()){ // O un else simple? Para discutir
+                JOptionPane.showMessageDialog(null, "Ningún otro almacén posee stock del producto: " + shopping.getName() + "\n Por lo que la compra de este no fue registrada.");
+            
+            } else{
 
-                Product request = new Product(shopping.getName(), (product.getAmmount() - shopping.getAmmount())); // Producto a comparar. Se guarda para mejor manejo
-                
-                Warehouse requestShop = null; // Almacén definitivo
-                
-                WarehouseList available = availability(request); // Lista de candidatos
-                
-                if(available == null){
-                    JOptionPane.showMessageDialog(null, "Ningún otro almacén posee stock del producto: " + shopping.getName() + "\n Por lo que la compra de este no fue registrada.");
-                } else{
-                    
-                    int minimum = Integer.MAX_VALUE;
+                int minimum = Integer.MAX_VALUE;
 
-                    for (int index = 0; index < available.getSize(); index++) { // De aquí se obtienen el warehouse REALMENTE cercano y se actualiza la info del recibo
-                        
-                        Warehouse candidate = available.getNode(index);
-                        
-                        if(shortPath){ // Dijkstra
+                for (int index = 0; index < available.getSize(); index++) { // De aquí se obtienen el warehouse REALMENTE cercano y se actualiza la info del recibo
 
-                                String toPrint = dijkSP(candidate, shop);
-                                
-                                String[] lines = toPrint.split("\n");
-                                
-                                String newline = lines[0];
-                                
-                                String[] distanceLine = newline.split(", ");
-                                
-                                int distance = Integer.parseInt(distanceLine[1]);
-                                
-                                if(distance < minimum){
-                                    
-                                    minimum = distance;
-                                    
-                                    receipt = toPrint;
-                                    
-                                    requestShop = candidate;
-                                }
-                                        
-                        } else{ //Floyd-Warshall
+                    Warehouse candidate = available.getNode(index);
 
-                            int[][] distanceMatrix = FloydWarshall();
+                    if(shortPath){ // Dijkstra
 
-                            if(distanceMatrix[candidate.getID()][shop.getID()] < minimum){
+                            String toPrint = dijkSP(candidate, shop);
 
-                                minimum = distanceMatrix[candidate.getID()][shop.getID()];
+                            String[] lines = toPrint.split("\n");
 
-                                receipt = FloydWarshallSP(candidate, shop, distanceMatrix); // Ya esto me retornará receipt = al string con la información correspondiente
-                                
+                            String newline = lines[0];
+
+                            String[] distanceLine = newline.split(", ");
+
+                            int distance = Integer.parseInt(distanceLine[1]);
+
+                            if(distance < minimum){
+
+                                minimum = distance;
+
+                                receipt = toPrint;
+
                                 requestShop = candidate;
                             }
 
-                        }
-               
-                    } 
-                    
-                    if(requestShop != null){
-                        
-                        ProductList definitiveStock = requestShop.getStock();
-                        
-                        for(int j = 0; j < definitiveStock.getSize(); j++){
-                            
-                            Product definitive = definitiveStock.getNode(j);
-                            
-                            if(definitive.getName().equalsIgnoreCase(request.getName())){
-                                
-                                receipt += shopping.getName() + " x" + shopping.getAmmount() + "\n";
-                                
-                                product.sellProduct(shopping.getAmmount());
-                                
-                                receipt += "Se solicitó el producto en: " + requestShop.getName() + ", " + request.getName() + " x" + request.getAmmount();
-                                
-                                definitive.sellProduct(request.getAmmount());
-                            }
-                        }   
+                    } else{ //Floyd-Warshall
 
-                    } else {
-                        JOptionPane.showMessageDialog(null,"No hay ningún almacén que pueda proveer el producto " + request.getName());
-                        return null;
+                        int[][] distanceMatrix = FloydWarshall();
+
+                        if(distanceMatrix[candidate.getID()][shop.getID()] < minimum){
+
+                            minimum = distanceMatrix[candidate.getID()][shop.getID()];
+
+                            receipt = FloydWarshallSP(candidate, shop, distanceMatrix); // Ya esto me retornará receipt = al string con la información correspondiente
+
+                            requestShop = candidate;
+                        }
+
                     }
-                }
-            
-            }
+
+                } 
+
+                if(requestShop != null){
+
+                    ProductList definitiveStock = requestShop.getStock();
+                    
+                    Product definitive = definitiveStock.getProductWithName(shopping.getName()); // Gracias a availability sabemos que está si o si en ese almacén, por lo que no hace verificar si es distinto de null
+
+                    receipt += shopping.getName() + " x" + (shopping.getAmmount() - request.getAmmount()) + "\n";
+
+                    product.sellProduct((shopping.getAmmount() - request.getAmmount()));
+
+                    receipt += "Se solicitó el producto en: " + requestShop.getName() + ", " + request.getName() + " x" + request.getAmmount();
+
+                    definitive.sellProduct(request.getAmmount());
+                    
+                    return receipt;
+                    
+                        }
+                    }   
+
+        } else {
+
+            JOptionPane.showMessageDialog(null,"No hay ningún almacén que pueda proveer más stock del producto " + shopping.getName());
 
         }
         
-        return receipt;
+        return null;
+           
     }
     
 }
