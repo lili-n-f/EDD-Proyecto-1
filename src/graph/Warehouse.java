@@ -12,18 +12,31 @@ import javax.swing.JOptionPane;
 public class Warehouse {
 
     private String name;
-    private Product[] stock;
+    private Product[] stock; //CAMBIAAAAAAAAAAAAAAAAR
     private int ID;
     private Warehouse next;
 
     /**
      * Constructor de la clase Warehouse
-     * @param name nombre del almacén (por ejemplo, A, B, o C)
+     * @param name nombre del almacén (por ejemplo, A, B, C...)
      * @param stock array de productos (objetos de la clase Product) que se pueden vender desde el almacén
      */
     public Warehouse(String name, Product[] stock){
             this.name = name;
             this.stock = stock;
+            this.ID = -1;
+            this.next = null;
+    }
+    
+    
+    
+    /**
+     * Constructor de la clase Warehouse
+     * @param name nombre del almacén
+     */
+    public Warehouse(String name){
+            this.name = name;
+            this.stock = new Product [0]; //CAMBIAAAAAAAAAAAAAAAAAAAAAAAR
             this.ID = -1;
     }
 
@@ -43,6 +56,23 @@ public class Warehouse {
             this.name = newName;
     }
 
+      /**
+     * Método para obtener el siguiente nodo al que apunta
+     * @return el siguiente nodo al que apunta
+     */
+    public Warehouse getNext() {
+        return next;
+    }
+
+    /**
+     * Método para cambiar el siguiente nodo al que apunta
+     * @param next nuevo nodo al que apuntará el almacén
+     */
+    public void setNext(Warehouse next) {
+        this.next = next;
+    }
+    
+    
     /**
      * Getter del atributo stock: con él obtienes el array de productos que se pueden vender desde el almacén.
      * @return array de productos que se pueden vender desde el almacén
@@ -75,6 +105,33 @@ public class Warehouse {
             this.ID = newID;
     }
 
+    //CAMBIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR
+    /**
+     * Método para incrementar la cantidad de un producto que se tiene en el stock.
+     * @param name nombre del producto cuya cantidad se desea incrementar.
+     * @param ammount cantidad de unidades del producto que se desean incrementar.
+     */
+    public void increaseProductStock(String name, int ammount){
+        if(this.stock.length>0){
+            Product aux = null;
+            for (Product product : this.stock){
+                if (product.getName().equalsIgnoreCase(name)){
+                    aux = product;
+                    break;
+                }
+            }
+            if (aux != null){
+                aux.buyProduct(ammount);
+                JOptionPane.showMessageDialog(null, "Stock del producto fue incrementado exitosamente.");
+            }else{
+                JOptionPane.showMessageDialog(null, "El producto no está en el stock del almacén.");
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "El stock de este almacén está vacío.");
+        }
+    }
+    
+    //CAMBIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR
     /**
      * Método que permite añadir un nuevo producto al array de productos que se pueden vender en el almacén.
      * @param productName nombre del producto a añadir
@@ -102,23 +159,20 @@ public class Warehouse {
             }
     }
     
-    
+    //CAMBIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR
     /**
-     * Método para obtener el siguiente nodo al que apunta
-     * @return
+     * Método que retorna un string con el nombre y cantidad de cada producto en el stock del almacén (si es que tiene stock).
+     * @return un string con nombre y cantidad de cada producto del stock o un string vacío si el almacén no tiene stock.
      */
-
-    public Warehouse getNext() {
-        return next;
+    public String showStock(){
+        String warehouseStock = "";
+        if (this.stock.length>0){
+            warehouseStock = "Almacén " + this.name + "\n";
+            for (Product product : this.stock){
+                warehouseStock += product.getName() + " x" + product.getAmmount() + "\n";
+            }
+        }
+        return warehouseStock;
     }
-
-    /**
-     * Método para seleccionar el siguiente nodo al que apunta
-     * @param next
-     */
-    public void setNext(Warehouse next) {
-        this.next = next;
-    }
-    
+        
 }
-
