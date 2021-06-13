@@ -177,7 +177,7 @@ public class addWarehouseWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bExistingWarehousesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bExistingWarehousesActionPerformed
-        JTextArea text = new JTextArea(g.getWarehouseNames());
+        JTextArea text = new JTextArea(g.warehouses.getWarehouseNames());
         text.setLineWrap(true);
         JScrollPane scrollPane = new JScrollPane(text);  
         scrollPane.setPreferredSize(new Dimension(200, 300));
@@ -197,7 +197,7 @@ public class addWarehouseWindow extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Debe ingresar un nombre antes de continuar.");
         }else{
             name = nameTxt.getText();
-            if (g.isValidNewWarehouseName(name)){
+            if (!g.warehouses.isWarehouseInList(name)){
                 Warehouse w = new Warehouse(name);
                 nameTxt.setEnabled(false);
                 bSubmitName.setEnabled(false);
