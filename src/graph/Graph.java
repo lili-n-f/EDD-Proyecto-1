@@ -528,66 +528,59 @@ public class Graph {
     }
     
     /**
-     * Método para obtener el camino más corto según el algoritmo de Floyd-Wharshall de TODOS los nodos
-     * @return una matriz con las distancias totales más cortas entre los nodos, ya que al tener varios candidatos, resultará más fácil obtenerlo de esta manera
-     * @author Ana Tovar
-     */
-    public int[][] FloydWarshall(){
+    * Método para conseguir el string con la información del recorrido de Floyd Warshal
+    * @param source nodo al que se le realiza la solicitud de stock
+    * @param target nodo al cual se le hace la compra original
+    * @return un string con la información deseada de esta función
+    * @author Ana Tovar
+    */
+    public String FloydWarshall(Warehouse source, Warehouse target){
         int [][] distanceMatrix = new int[vertexNumber][vertexNumber];
+        int [][] vertexMatrix = new int[vertexNumber][vertexNumber];
         int INF = 1000000;
+        int start = source.getID();
+        int finish = target.getID();
+        String toPrintFW = "";
         
         for(int i = 0; i < vertexNumber; i++){
             for(int j = 0; j < vertexNumber; j++){
+
                 if(adjMatrix[i][j] == 0){
                     distanceMatrix[i][j] = INF;
                 }else{
                     distanceMatrix[i][j] = adjMatrix[i][j];
                 }
+                
+                if(distanceMatrix[i][j] == INF){
+                    
+                    vertexMatrix[i][j] = -1;
+                
+                }else{
+                    
+                    vertexMatrix[i][j] = j;
+                
+                }
             }
         }
         
-        for(int k = 0; k < vertexNumber; k++){ 
+        for(int k = 0; k < vertexNumber; k++){ // El algoritmo Floyd Warshall usa un par de datos, por lo que se necesita este otro for loop con el contador k
             for(int i = 0; i < vertexNumber; i++){
                 for(int j = 0; j < vertexNumber; j++){
                     if(distanceMatrix[i][k] + distanceMatrix[k][j] < distanceMatrix[i][j]){ // distanceMatrix[i][j] originalmente guarda el dato de la matriz original, este se va a ir actualizando a la distancia total más corta entre los nodos
+                        
                         distanceMatrix[i][j] = distanceMatrix[i][k] + distanceMatrix[k][j];
+                        vertexMatrix[i][j] = vertexMatrix[i][k];
+                    
                     } 
                 }
             }
         }
         
-        return distanceMatrix;
-    }
-    
-    /**
-     * Método para conseguir el string con la información del recorrido de Floyd Warshal
-     * @param source nodo al que se le realiza la solicitud de stock
-     * @param target nodo al cual se le hace la compra original
-     * @param distanceMatrix matriz de distancias totales, obtenidas del método anterior
-     * @return un string con la información deseada de esta función
-     * @author Ana Tovar
-     */
-    public String FloydWarshallSP(Warehouse source, Warehouse target, int [][] distanceMatrix){
-        int start = source.getID();
-        int finish = target.getID();
-        int INF = 1000000;
-        int [][] vertexMatrix = new int[vertexNumber][vertexNumber];
-        String toPrintFW = "";
-        
-        for(int i = 0; i < vertexNumber; i++){
-            for(int j = 0; j < vertexNumber; j++){
-                if(distanceMatrix[i][j] == INF){
-                    vertexMatrix[i][j] = -1;
-                    
-                } else{
-                    vertexMatrix[i][j] = j;
-                }
-            }
-        }
-            
         if(vertexMatrix[start][finish] == -1){
+            
             return null;
-        } else{
+            
+        }else{
 
             toPrintFW += "Distancia total, " + distanceMatrix[start][finish] + "\n" + "El recorrido empieza en " + source.getName() + " Pasa por: " + "\n"; // Me appendea al string la distancia total entre ambos nodos
             
@@ -601,13 +594,10 @@ public class Graph {
         }
         
         
-        toPrintFW += target.getName(); // Añade al último almacén, que es el del pedido original
+        toPrintFW += "Finaliza el recorrido."; // Añade al último almacén, que es el del pedido original
         
         return toPrintFW;
-       
     }
-    
-    
   
 
      /**
