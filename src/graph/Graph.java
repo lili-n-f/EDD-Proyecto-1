@@ -668,14 +668,14 @@ public class Graph {
             
             Product product = products.getNode(i);
 
-            if(product.getName().equals(shopping.getName()) && product.getAmmount() >= shopping.getAmmount()){ // Si todo va perfecto, se hace el cambio inmediatamente
+            if(product.getName().equalsIgnoreCase(shopping.getName()) && product.getAmmount() >= shopping.getAmmount()){ // Si todo va perfecto, se hace el cambio inmediatamente
                 
                 
                 receipt += shopping.getName() + " x" + shopping.getAmmount() + "\n";
                 product.sellProduct(shopping.getAmmount());
                 
                 
-            } else if (product.getName().equals(shopping.getName()) && product.getAmmount() < shopping.getAmmount()){ // O un else simple? Para discutir
+            } else if (product.getName().equalsIgnoreCase(shopping.getName()) && product.getAmmount() < shopping.getAmmount()){ // O un else simple? Para discutir
 
                 Product request = new Product(shopping.getName(), (product.getAmmount() - shopping.getAmmount())); // Producto a comparar. Se guarda para mejor manejo
                 
@@ -732,14 +732,22 @@ public class Graph {
                     } 
                     
                     if(requestShop != null){
+                        
                         ProductList definitiveStock = requestShop.getStock();
+                        
                         for(int j = 0; j < definitiveStock.getSize(); j++){
                             
                             Product definitive = definitiveStock.getNode(j);
                             
                             if(definitive.getName().equalsIgnoreCase(request.getName())){
+                                
+                                receipt += shopping.getName() + " x" + shopping.getAmmount() + "\n";
+                                
+                                product.sellProduct(shopping.getAmmount());
+                                
+                                receipt += "Se solicitó el producto en: " + requestShop.getName() + ", " + request.getName() + " x" + request.getAmmount();
+                                
                                 definitive.sellProduct(request.getAmmount());
-                                receipt += "\n" + request.getName() + " x" + request.getAmmount();
                             }
                         }   
 
