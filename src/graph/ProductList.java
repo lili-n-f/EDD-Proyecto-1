@@ -50,6 +50,16 @@ public class ProductList extends List<Product> {
     }
     
     /**
+     * Método para añadir en última posición un nodo
+     * @param name nombre del producto a añadir
+     * @param ammount cantidad del producto a añadir
+     */
+    public void addLast(String name, int ammount){
+        Product n = new Product(name, ammount);
+        this.addLast(n);
+    }
+    
+    /**
      * Método que retorna el nodo en la posición de la lista pasada por parámetro.
      * @param position posición del nodo en la lista
      * @return el nodo en la posición pasada por parámetro de la lista
@@ -158,7 +168,7 @@ public class ProductList extends List<Product> {
         if(!this.isEmpty()){
             Product aux = this.head;
             while (aux != null) {
-                if (aux.getName().equals(name)){
+                if (aux.getName().equalsIgnoreCase(name)){
                     return aux;
                 }
                 aux = aux.getNext();
@@ -193,7 +203,7 @@ public class ProductList extends List<Product> {
                 JOptionPane.showMessageDialog(null, "El producto no está en el stock del almacén.");
             }
         }else{
-            JOptionPane.showMessageDialog(null, "El stock de este almacén está vacío.");
+            JOptionPane.showMessageDialog(null, "El stock de este almacén está vacío. Valide sus datos.");
         }
     }
     
@@ -226,6 +236,14 @@ public class ProductList extends List<Product> {
             }
         }
         return productsInfo;
+    }
+    
+    /**
+     *  Método para vender un producto específico de la lista de productos. (Al llamarse al método sellProduct del producto específico a vender, se descuenta de su cantidad disponible la cantidad pedida).
+     * @param orderedProduct producto ordenado (objeto Product con el nombre del producto que se vende y la cantidad que se ordena del mismo)
+     */
+    public void sellProduct(Product orderedProduct){
+        this.getProductWithName(orderedProduct.getName()).sellProduct(orderedProduct.getAmmount());
     }
     
 }

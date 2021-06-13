@@ -17,6 +17,7 @@ import javax.swing.JTextArea;
 public class mainWindow extends javax.swing.JFrame {
 
     public static Graph g;
+    public Warehouse warehouseToBuy;
     
     /** Creates new form mainWindow */
     public mainWindow(Graph g) {
@@ -25,10 +26,14 @@ public class mainWindow extends javax.swing.JFrame {
         this.setVisible(true);
         this.setLocationRelativeTo(null);
         bExit.setToolTipText("Haz click aquí para guardar y cerrar.");
+        
         bAddWarehouse.setToolTipText("Haz click aquí para agregar un nuevo almacén al grafo.");
         bDeleteWarehouse.setToolTipText("Haz click aquí para eliminar un almacén del grafo.");
         bAdminStock.setToolTipText("Haz click aquí para gestionar el stock de uno de los almacenes.");
-        bSeeGraph.setToolTipText("Haz click aquí para ver el grafo.");
+        
+        bAvailableProduct.setToolTipText("Recuerda escribir en la casilla correspondiente el nombre del producto cuya disponibilidad deseas ver.");
+        bAvailableProdsTotal.setToolTipText("Haz click aquí para ver la disponibilidad de productos de todos los almacenes.");
+        bChooseWarehouse.setToolTipText("Haz click aquí para escoger de qué almacén realizarás la orden y luego iniciar el pedido.");
     }
 
     /** This method is called from within the constructor to
@@ -53,24 +58,16 @@ public class mainWindow extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         bAvailableProdsTotal = new javax.swing.JButton();
         jSeparator4 = new javax.swing.JSeparator();
-        bExistingWarehouses = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        bProductName = new javax.swing.JTextField();
         bChooseWarehouse = new javax.swing.JButton();
         jSeparator5 = new javax.swing.JSeparator();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
         availableNameTxt = new javax.swing.JTextField();
-        sProductAmmount = new javax.swing.JSpinner();
-        bFinishOrder = new javax.swing.JButton();
-        bAddOrder = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         bAddWarehouse = new javax.swing.JButton();
-        bSeeGraph = new javax.swing.JButton();
         bDeleteWarehouse = new javax.swing.JButton();
         bAdminStock = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
@@ -100,13 +97,18 @@ public class mainWindow extends javax.swing.JFrame {
         jPanel1.add(bAvailableProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 110, -1, -1));
 
         jLabel6.setText("VER DISPONIBILIDAD POR ALMACENES: ");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, -1, -1));
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 164, -1, 20));
 
         jLabel7.setText("cuya disponibilidad desea ver.");
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, -1, -1));
 
         warehouseNameTxt.setText("Introduce el nombre del almacén");
-        jPanel1.add(warehouseNameTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 250, 220, -1));
+        warehouseNameTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                warehouseNameTxtActionPerformed(evt);
+            }
+        });
+        jPanel1.add(warehouseNameTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 230, 220, -1));
         jPanel1.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, 410, 10));
 
         jLabel8.setText("VER DISPONIBILIDAD POR PRODUCTO: introduzca el nombre del producto");
@@ -118,52 +120,26 @@ public class mainWindow extends javax.swing.JFrame {
                 bAvailableProdsTotalActionPerformed(evt);
             }
         });
-        jPanel1.add(bAvailableProdsTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 150, -1, -1));
-        jPanel1.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, 410, 10));
-
-        bExistingWarehouses.setText("Ver almacenes preexistentes");
-        bExistingWarehouses.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                bExistingWarehousesMouseMoved(evt);
-            }
-        });
-        bExistingWarehouses.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bExistingWarehousesActionPerformed(evt);
-            }
-        });
-        jPanel1.add(bExistingWarehouses, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 190, -1, 30));
+        jPanel1.add(bAvailableProdsTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 160, -1, -1));
+        jPanel1.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, 410, 10));
 
         jLabel9.setText("ESCOGER EL ALMACÉN DE DONDE ORDENAR: introduzca el nombre del");
-        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, -1, -1));
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, -1, -1));
 
         jLabel10.setText("almacén de donde ordenará.");
-        jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, -1, -1));
+        jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, -1, -1));
 
-        bProductName.setText("Introduce el nombre del producto");
-        jPanel1.add(bProductName, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 360, 210, -1));
-
-        bChooseWarehouse.setText("ESCOGER ALMACÉN");
-        jPanel1.add(bChooseWarehouse, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 280, -1, -1));
-        jPanel1.add(jSeparator5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, 410, 10));
-
-        jLabel11.setText("REALIZAR PEDIDO: introduzca el nombre del producto que desea ordenar");
-        jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 320, -1, -1));
-
-        jLabel12.setText("y la cantidad. Luego de agregar al carrito, puede ingresar otro producto.");
-        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, -1, -1));
+        bChooseWarehouse.setText("ESCOGER ALMACÉN E INICIAR PEDIDO");
+        bChooseWarehouse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bChooseWarehouseActionPerformed(evt);
+            }
+        });
+        jPanel1.add(bChooseWarehouse, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 260, 270, 30));
+        jPanel1.add(jSeparator5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 410, 10));
 
         availableNameTxt.setText("Introduce el nombre del producto");
         jPanel1.add(availableNameTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 80, 220, -1));
-
-        sProductAmmount.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
-        jPanel1.add(sProductAmmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 360, 70, -1));
-
-        bFinishOrder.setText("TERMINAR ORDEN");
-        jPanel1.add(bFinishOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 390, -1, -1));
-
-        bAddOrder.setText("AÑADIR AL CARRITO");
-        jPanel1.add(bAddOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 390, -1, -1));
 
         jTabbedPane1.addTab("CLIENTES", jPanel1);
 
@@ -184,11 +160,7 @@ public class mainWindow extends javax.swing.JFrame {
                 bAddWarehouseActionPerformed(evt);
             }
         });
-        jPanel2.add(bAddWarehouse, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, 190, 30));
-
-        bSeeGraph.setText("VER GRAFO");
-        bSeeGraph.setToolTipText("Haz click aquí para ver el grafo.");
-        jPanel2.add(bSeeGraph, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 300, 190, 30));
+        jPanel2.add(bAddWarehouse, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 110, 190, 30));
 
         bDeleteWarehouse.setText("ELIMINAR UN ALMACÉN");
         bDeleteWarehouse.setToolTipText("Haz click aquí para eliminar un almacén del grafo.");
@@ -197,7 +169,7 @@ public class mainWindow extends javax.swing.JFrame {
                 bDeleteWarehouseActionPerformed(evt);
             }
         });
-        jPanel2.add(bDeleteWarehouse, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 180, 190, 30));
+        jPanel2.add(bDeleteWarehouse, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 160, 190, 30));
 
         bAdminStock.setText("GESTIÓN DE STOCK");
         bAdminStock.setToolTipText("Haz click aquí para gestionar el stock de uno de los almacenes.");
@@ -206,14 +178,14 @@ public class mainWindow extends javax.swing.JFrame {
                 bAdminStockActionPerformed(evt);
             }
         });
-        jPanel2.add(bAdminStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 240, 190, 30));
+        jPanel2.add(bAdminStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 210, 190, 30));
 
         jLabel3.setText("almacenes y stock");
         jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 30, 130, -1));
 
         jTabbedPane1.addTab("ADMINISTRACIÓN", jPanel2);
 
-        getContentPane().add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 450, 470));
+        getContentPane().add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 450, 360));
 
         bExit.setBackground(new java.awt.Color(255, 102, 153));
         bExit.setForeground(new java.awt.Color(255, 255, 255));
@@ -250,22 +222,10 @@ public class mainWindow extends javax.swing.JFrame {
         stockAdministrationWindow saw = new stockAdministrationWindow(g, this);
     }//GEN-LAST:event_bAdminStockActionPerformed
 
-    private void bExistingWarehousesMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bExistingWarehousesMouseMoved
-
-    }//GEN-LAST:event_bExistingWarehousesMouseMoved
-
-    private void bExistingWarehousesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bExistingWarehousesActionPerformed
-        JTextArea text = new JTextArea(g.warehouses.getWarehouseNames());
-        text.setLineWrap(true);
-        JScrollPane scrollPane = new JScrollPane(text);
-        scrollPane.setPreferredSize(new Dimension(200, 300));
-        JOptionPane.showMessageDialog(null, scrollPane, "Almacenes", JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_bExistingWarehousesActionPerformed
-
     private void bAvailableProdsTotalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAvailableProdsTotalActionPerformed
             String toPrint = "";
             toPrint += g.bfs();
-            toPrint += "\n";
+            toPrint += "\n\n";
             toPrint += g.dfs();
             JTextArea text = new JTextArea(toPrint);
             text.setLineWrap(false);
@@ -275,8 +235,39 @@ public class mainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_bAvailableProdsTotalActionPerformed
 
     private void bAvailableProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAvailableProductActionPerformed
-        
+        if(availableNameTxt.getText().isBlank() || availableNameTxt.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Debe ingresar el nombre del producto antes de continuar.");
+        }else{
+            String toPrint = "";
+            toPrint += g.bfsProduct(availableNameTxt.getText());
+            toPrint += "\n\n";
+            toPrint += g.dfsProduct(availableNameTxt.getText());
+            JTextArea text = new JTextArea(toPrint);
+            text.setLineWrap(false);
+            JScrollPane scrollPane = new JScrollPane(text);
+            scrollPane.setPreferredSize(new Dimension(350, 300));
+            JOptionPane.showMessageDialog(null, scrollPane, "Recorridos", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_bAvailableProductActionPerformed
+
+    private void bChooseWarehouseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bChooseWarehouseActionPerformed
+        if(warehouseNameTxt.getText().isBlank() || warehouseNameTxt.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Debe ingresar el nombre del almacén antes de continuar.");
+        }else{
+            warehouseToBuy = g.warehouses.getWarehouse(warehouseNameTxt.getText());
+            if(warehouseToBuy != null){
+                orderWindow ow = new orderWindow(g, warehouseToBuy, this);
+                this.setVisible(false);
+                warehouseNameTxt.setText("Introduce el nombre del almacén");
+            }else{
+                JOptionPane.showMessageDialog(null, "El nombre introducido no corresponde a ningún almacén.");
+            }
+        }
+    }//GEN-LAST:event_bChooseWarehouseActionPerformed
+
+    private void warehouseNameTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_warehouseNameTxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_warehouseNameTxtActionPerformed
 
     /**
      * @param args the command line arguments
@@ -315,22 +306,15 @@ public class mainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField availableNameTxt;
-    private javax.swing.JButton bAddOrder;
     private javax.swing.JButton bAddWarehouse;
     private javax.swing.JButton bAdminStock;
     private javax.swing.JButton bAvailableProdsTotal;
     private javax.swing.JButton bAvailableProduct;
     private javax.swing.JButton bChooseWarehouse;
     private javax.swing.JButton bDeleteWarehouse;
-    private javax.swing.JButton bExistingWarehouses;
     private javax.swing.JButton bExit;
-    private javax.swing.JButton bFinishOrder;
-    private javax.swing.JTextField bProductName;
-    private javax.swing.JButton bSeeGraph;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -347,7 +331,6 @@ public class mainWindow extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JSpinner sProductAmmount;
     private javax.swing.JTextField warehouseNameTxt;
     // End of variables declaration//GEN-END:variables
 

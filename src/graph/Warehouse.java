@@ -135,9 +135,5 @@ public class Warehouse {
         return warehouseStock;
     }
     
-    
-    
-  
-    
 }
 

@@ -280,7 +280,6 @@ public class stockAdministrationWindow extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Debe ingresar el nombre del producto antes de continuar.");
         }else{
             if (!w.getStock().isProductInList(newProductTxt.getText())){
-                //OJOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO Si hacemos una lista de productos totales, es necesario actualizarla también!!!!!!!!!!!!!
                 w.getStock().addNewProductToStock(newProductTxt.getText(), (Integer)sNewProductAmmount.getValue());
                 if (!bBack.isEnabled() && !w.getStock().isEmpty()){
                     bBack.setEnabled(true);

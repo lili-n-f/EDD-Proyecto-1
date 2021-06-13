@@ -153,7 +153,7 @@ public class addWarehouseWindow extends javax.swing.JFrame {
         jLabel8.setText("Distancia:");
         jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 280, -1, 20));
 
-        sDistance.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
+        sDistance.setModel(new javax.swing.SpinnerNumberModel(1, 1, 999999, 1));
         sDistance.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 sDistanceKeyTyped(evt);
