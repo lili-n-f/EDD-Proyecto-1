@@ -93,7 +93,7 @@ public class Product {
      * @return string con el nombre y cantidad del producto
      */
     public String showInfo(){
-        return this.name + " x" + this.ammount + "\n";
+        return "\t"+ this.name + " x" + this.ammount + "\n";
     }
 
 }

@@ -45,9 +45,12 @@ public class Queue {
     
     /**
      * Método para encolar
-     * @param n, nodo que se desea encolar
+     * @param name nombre del almacén que se encolará
+     * @param stock lista de productos (objetos de la clase Product) que se pueden vender desde el almacén
+     * @param ID identificación del nodo almacén (representa su posición en la matriz de adyacencia del grafo)
      */
-    public void inqueue(Warehouse n){
+    public void inqueue(String name, ProductList stock, int ID){
+        Warehouse n = new Warehouse(name, stock, ID);
         if (isEmpty()){
             this.head = n;
             this.tail = n;

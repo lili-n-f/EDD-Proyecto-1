@@ -211,11 +211,11 @@ public class Graph {
         String toPrint = "";
         boolean visited[] = new boolean[warehousesInGraph]; // Crea un array de booleanos del tamaño de la cantidad de almacenes en el grafo, default en false
         Queue queue = new Queue();
-        Warehouse aux;
+        Warehouse aux = warehouses.getFirst();
 
-        toPrint += "Búsqueda BFS\nDisponibilidad de productos por almacén\n";
+        toPrint += "Búsqueda BFS\n\tDisponibilidad de productos por almacén\n\n";
 
-        queue.inqueue(warehouses.getNode(0)); // Los nodos visitados entrarán aquí;
+        queue.inqueue(aux.getName(), aux.getStock(), aux.getID()); // Los nodos visitados entrarán aquí;
         visited[0] = true; // Ok entonces aquí la idea es utilizar el índice a cada warehouse, de lo contrario no podremos tener una lista booleana de visitados y eso causaría un loop infinito.
         
         while (!queue.isEmpty()){
@@ -228,8 +228,8 @@ public class Graph {
             for(int i=0; i < warehousesInGraph; i++){
 
                 if(adjMatrix[aux.getID()][i] != 0 && visited[i] == false){
-
-                    queue.inqueue(warehouses.getNode(i)); // Me añade al queue
+                    Warehouse newNode = warehouses.getNode(i);
+                    queue.inqueue(newNode.getName(), newNode.getStock(), newNode.getID()); // Me añade al queue
                     visited[i] = true; //Esto settea los vértices ya visitados como true, ya que esa es la condición que vamos a revisar.
                 }
 
@@ -253,11 +253,11 @@ public class Graph {
         String toPrint = "";
         boolean visited[] = new boolean[warehousesInGraph]; // Crea un array de booleanos del tamaño la cantidad de almacenes en el grafo, default en false
         Queue queue = new Queue();
-        Warehouse aux;
+        Warehouse aux = this.warehouses.getFirst();
         
-        toPrint += "Búsqueda BFS\nDisponibilidad de " + name + " por almacén.\n";
+        toPrint += "Búsqueda BFS\n\tDisponibilidad de " + name + " por almacén.\n\n";
         
-        queue.inqueue(warehouses.getNode(0)); // Se  supone que empieza desde el menor ID, es decir, 0
+        queue.inqueue(aux.getName(), aux.getStock(), aux.getID()); // Se  supone que empieza desde el menor ID, es decir, 0
         visited[0] = true;
         
         while (!queue.isEmpty()){
@@ -266,21 +266,16 @@ public class Graph {
             queue.dequeue();
             
             ProductList products = aux.getStock();
-            for (int j = 0; j < products.getSize(); j++) {
-                
-                Product product = products.getNode(j);
-                
-                if (product.getName().equals(name)) {
-                    toPrint += "Almacén "+ aux.getName() + "\n" + product.getName() + " x" + product.getAmmount() + "\n"; //Aquí solo añade a los almacenes que tengan ese producto, si todos lo tienen, a pos , igual solo se appendea la cantidad de ESE producto en específico, no más
-                    break;
-                }
+            Product product = products.getProductWithName(name);
+            if (product != null){ //esto significa que product es un producto con el nombre buscado
+                toPrint += "Almacén "+ aux.getName() + "\n" + product.getName() + " x" + product.getAmmount() + "\n"; //Aquí solo añade a los almacenes que tengan ese producto, si todos lo tienen, a pos , igual solo se appendea la cantidad de ESE producto en específico, no más
             }
-
+            
             for(int i=1; i < warehousesInGraph; i++){ // En este caso i empieza desde 1 ya que comencé desde 0
 
                 if(adjMatrix[aux.getID()][i] != 0 && visited[i] == false){
 
-                    queue.inqueue(warehouses.getNode(i)); // Me añade al queue
+                    queue.inqueue(warehouses.getNode(i).getName(), warehouses.getNode(i).getStock(), warehouses.getNode(i).getID()); // Me añade al queue
                     visited[i] = true; //Esto settea los vértices ya visitados como true, ya que esa es la condición que vamos a revisar.
                 }
             }  
@@ -298,41 +293,44 @@ public class Graph {
      * @author Ana Tovar
      */
     public String dfs(){ 
+        if (!this.warehouses.isEmpty()){
+            String toPrint = "";
+            boolean visited[] = new boolean[warehousesInGraph];
+            Stack stack = new Stack();
+            Warehouse aux = warehouses.getNode(0);
 
-        String toPrint = "";
-        boolean visited[] = new boolean[warehousesInGraph];
-        Stack stack = new Stack();
-        Warehouse aux;
+            toPrint += "Búsqueda DFS\n\tDisponibilidad de productos por almacén\n\n";
 
-        toPrint += "Búsqueda DFS\nDisponibilidad de productos por almacén\n";
+            stack.push(aux.getName(), aux.getStock(), aux.getID()); // Los nodos visitados entrarán aquí; ahora usamos el stack
+            visited[0] = true;
 
-        stack.push(warehouses.getNode(0)); // Los nodos visitados entrarán aquí; ahora usamos el stack
-        visited[0] = true;
-        
-        toPrint += warehouses.getNode(0).showStock(); // Este print es "único" en el sentido que solo se hace para el vértice de menor índice, porque los otros se harán dentro del for loop siguiente
-        
+            toPrint += aux.showStock(); // Este print es "único" en el sentido que solo se hace para el vértice de menor índice, porque los otros se harán dentro del for loop siguiente
 
-        while (!stack.isEmpty()){
-            
-            aux = stack.getTop();
-            stack.pop();
 
-            for(int i=0; i < warehousesInGraph; i++){
+            while (!stack.isEmpty()){
 
-                if(adjMatrix[aux.getID()][i] != 0 && visited[i] == false){
+                aux = stack.getTop();
+                stack.pop();
 
-                    stack.push(aux); // Me añade al stack, recordar que aquí es LIFO (Last in, first out)
-                    visited[i] = true; //Esto settea los vértices ya visitados como true, ya que esa es la condición que vamos a revisar.
-                    
-                    aux = warehouses.getNode(i); // "Salta" al siguiente nodo inmediatamente
-                    
-                    toPrint += aux.showStock(); // Nueva adición al toPrint, ya que si se incluye en el while, habrían duplicados.
+                for(int i=0; i < warehousesInGraph; i++){
 
-                    i = -1; // "Se reinicia el contador", -1 ya que gracias al i++ se convertirá en 0
-                }
-            }  
+                    if(adjMatrix[aux.getID()][i] != 0 && visited[i] == false){
+
+                        stack.push(aux.getName(), aux.getStock(), aux.getID()); // Me añade al stack, recordar que aquí es LIFO (Last in, first out)
+                        visited[i] = true; //Esto settea los vértices ya visitados como true, ya que esa es la condición que vamos a revisar.
+
+                        aux = warehouses.getNode(i); // "Salta" al siguiente nodo inmediatamente
+
+                        toPrint += aux.showStock(); // Nueva adición al toPrint, ya que si se incluye en el while, habrían duplicados.
+
+                        i = -1; // "Se reinicia el contador", -1 ya que gracias al i++ se convertirá en 0
+                    }
+                }  
+            }
+            return toPrint; //String de info de warehouses en el orden que se encontraron en el DFS instead
+        }else{
+            return "Grafo vacío.";
         }
-        return toPrint; //String de info de warehouses en el orden que se encontraron en el DFS instead
     }
 
 
@@ -344,58 +342,51 @@ public class Graph {
      * @author Ana Tovar
      */
     public String dfsProduct(String name){ 
+        if (!this.warehouses.isEmpty()){
+            String toPrint = "";
+            boolean visited[] = new boolean[warehousesInGraph];
+            Stack stack = new Stack();
+            Warehouse aux = warehouses.getFirst();
 
-        String toPrint = "";
-        boolean visited[] = new boolean[warehousesInGraph];
-        Stack stack = new Stack();
-        Warehouse aux;
-        
-        toPrint += "Búsqueda DFS\nDisponibilidad de " + name + " por almacén.\n";
-        
-        stack.push(warehouses.getNode(0)); 
-        visited[0] = true;
-        
-        ProductList products = warehouses.getNode(0).getStock(); // Inicio desde cero, el primer nodo
-        for (int i = 0; i < products.getSize(); i++) {
-            
-            Product product = products.getNode(i);
-            
-            if (product.getName().equals(name)) {
-                toPrint += "Almacén " + warehouses.getNode(0).getName() + "\n" + product.getName() + " x" + product.getAmmount() + "\n";
-                break;
+            toPrint += "Búsqueda DFS\n\tDisponibilidad de " + name + " por almacén.\n\n";
+
+            stack.push(aux.getName(), aux.getStock(), aux.getID()); 
+            visited[0] = true;
+
+            ProductList products = aux.getStock(); // Inicio desde cero, el primer nodo
+            Product productAux = products.getProductWithName(name);
+            if (productAux != null){ //esto significa que product es un producto con el nombre buscado
+                toPrint += "Almacén "+ aux.getName() + "\n" + productAux.getName() + " x" + productAux.getAmmount() + "\n"; //Aquí solo añade a los almacenes que tengan ese producto, si todos lo tienen, a pos , igual solo se appendea la cantidad de ESE producto en específico, no más
             }
-        } // Este print parece redundante pero es necesario para que aparezca el primer nodo y no se repita en las demás iteraciones. Es único
+            // Este print parece redundante pero es necesario para que aparezca el primer nodo y no se repita en las demás iteraciones. Es único
 
-        while (!stack.isEmpty()){
+            while (!stack.isEmpty()){
 
-            aux = stack.getTop();
-            stack.pop();
+                aux = stack.getTop();
+                stack.pop();
 
-            for(int i=0; i < warehousesInGraph; i++){
+                for(int i=0; i < warehousesInGraph; i++){
 
-                if(adjMatrix[aux.getID()][i] != 0 && visited[i] == false){
+                    if(adjMatrix[aux.getID()][i] != 0 && visited[i] == false){
 
-                    stack.push(aux); // Me añade al stack, recordar que aquí es LIFO (Last in, first out)
-                    visited[i] = true; //Esto settea los vértices ya visitados como true, ya que esa es la condición que vamos a revisar.
-                    
-                    aux = warehouses.getNode(i); // "Salta" al siguiente nodo inmediatamente
-                    products = aux.getStock(); // Cambia el array de productos por almacén
-                    
-                    for (int j = 0; j < products.getSize(); j++) {
-                        
-                        Product product = products.getNode(j);
-                        
-                        if (product.getName().equals(name)){
-                            toPrint += "Almacén " + aux.getName() + "\n" + product.getName() + " x" + product.getAmmount() + "\n";
-                            break;
+                        stack.push(aux.getName(), aux.getStock(), aux.getID()); // Me añade al stack, recordar que aquí es LIFO (Last in, first out)
+                        visited[i] = true; //Esto settea los vértices ya visitados como true, ya que esa es la condición que vamos a revisar.
+
+                        aux = warehouses.getNode(i); // "Salta" al siguiente nodo inmediatamente
+                        products = aux.getStock(); // Cambia el array de productos por almacén
+                        productAux = products.getProductWithName(name);
+                        if (productAux != null){ //esto significa que product es un producto con el nombre buscado
+                            toPrint += "Almacén "+ aux.getName() + "\n" + productAux.getName() + " x" + productAux.getAmmount() + "\n"; //Aquí solo añade a los almacenes que tengan ese producto, si todos lo tienen, a pos , igual solo se appendea la cantidad de ESE producto en específico, no más
                         }
-
-                    i = -1; // "Se reinicia el contador", -1 ya que gracias al i++ se convertirá en 0
-                    }
-                }  
+                        i = -1; // "Se reinicia el contador", -1 ya que gracias al i++ se convertirá en 0
+                        
+                    }  
+                }
             }
+            return toPrint;
+        }else{
+            return "Grafo vacío.";
         }
-        return toPrint;
     }
 
     
@@ -408,16 +399,14 @@ public class Graph {
      */     
     public WarehouseList availability(Product request){
         WarehouseList available = new WarehouseList();
-        for(int index = 0; index < available.getSize(); index++){
+        for(int index = 0; index < warehouses.getSize(); index++){
             
             ProductList products = warehouses.getNode(index).getStock();
-            
-            for(int j = 0; j < products.getSize(); j++){
-                
-                Product product = products.getNode(j);
-                
-                if(product.getName().equals(request.getName()) && product.getAmmount() >= request.getAmmount()){ // Se confirma que el almacén tenga no solo el producto sino la cantidad necesaria de este
-                    available.addLast(warehouses.getNode(index));
+            Product aux = products.getProductWithName(request.getName());
+            if (aux != null){ //significa que aux es un producto con el nombre buscado
+                if (aux.getAmmount()>=request.getAmmount()){ //confirma no sólo que el producto existe en el stock sino también que se tiene la cantidad necesaria
+                    Warehouse newNode = warehouses.getNode(index);
+                    available.addLast(newNode.getName(), newNode.getStock(), newNode.getID());
                 }
             }
         }

@@ -92,7 +92,12 @@ public class mainWindow extends javax.swing.JFrame {
         jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 30, 260, -1));
 
         bAvailableProduct.setText("VER DISPONIBILIDAD");
-        jPanel1.add(bAvailableProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 150, -1, -1));
+        bAvailableProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bAvailableProductActionPerformed(evt);
+            }
+        });
+        jPanel1.add(bAvailableProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 110, -1, -1));
 
         jLabel6.setText("VER DISPONIBILIDAD POR ALMACENES: ");
         jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, -1, -1));
@@ -113,7 +118,7 @@ public class mainWindow extends javax.swing.JFrame {
                 bAvailableProdsTotalActionPerformed(evt);
             }
         });
-        jPanel1.add(bAvailableProdsTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 110, -1, -1));
+        jPanel1.add(bAvailableProdsTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 150, -1, -1));
         jPanel1.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, 410, 10));
 
         bExistingWarehouses.setText("Ver almacenes preexistentes");
@@ -258,8 +263,20 @@ public class mainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_bExistingWarehousesActionPerformed
 
     private void bAvailableProdsTotalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAvailableProdsTotalActionPerformed
-        
+            String toPrint = "";
+            toPrint += g.bfs();
+            toPrint += "\n";
+            toPrint += g.dfs();
+            JTextArea text = new JTextArea(toPrint);
+            text.setLineWrap(false);
+            JScrollPane scrollPane = new JScrollPane(text);
+            scrollPane.setPreferredSize(new Dimension(350, 300));
+            JOptionPane.showMessageDialog(null, scrollPane, "Recorridos", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_bAvailableProdsTotalActionPerformed
+
+    private void bAvailableProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAvailableProductActionPerformed
+        
+    }//GEN-LAST:event_bAvailableProductActionPerformed
 
     /**
      * @param args the command line arguments

@@ -154,11 +154,11 @@ public class ProductList extends List<Product> {
      * @param name string con el nombre del producto cuyo nodo se busca
      * @return el nodo cuyo nombre es el pasado por parámetro, o null si un producto con ese nombre no existe en la lista.
      */
-    private Product getProductWithName(String name){
+    public Product getProductWithName(String name){
         if(!this.isEmpty()){
             Product aux = this.head;
             while (aux != null) {
-                if (aux.getName().equalsIgnoreCase(name)){
+                if (aux.getName().equals(name)){
                     return aux;
                 }
                 aux = aux.getNext();

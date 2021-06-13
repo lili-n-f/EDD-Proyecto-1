@@ -45,9 +45,12 @@ public class Stack {
     
     /**
      * Método para apilar
-     * @param n, nodo que se desea apilar
+     * @param name nombre del almacén que se apilará
+     * @param stock lista de productos (objetos de la clase Product) que se pueden vender desde el almacén
+     * @param ID identificación del nodo almacén (representa su posición en la matriz de adyacencia del grafo)
      */
-    public void push(Warehouse n){
+    public void push(String name, ProductList stock, int ID){
+        Warehouse n = new Warehouse(name, stock, ID);
         if (isEmpty()){
             this.top = n;
             this.base = n;

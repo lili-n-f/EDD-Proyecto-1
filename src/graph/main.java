@@ -30,6 +30,9 @@ public class main {
         //addWarehouseWindow w = new addWarehouseWindow(g);
         //deleteWarehouseWindow w = new deleteWarehouseWindow(g);
         mainWindow w = new mainWindow(g);
+        //System.out.println(g.dfs());
+        //System.out.println(g.warehouses.getWarehouseNames());
+        
     }
     
 }

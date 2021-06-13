@@ -38,7 +38,22 @@ public class Warehouse {
             this.stock = new ProductList();
             this.ID = -1;
     }
-
+    
+    
+    /**
+     * Constructor de la clase Warehouse
+     * @param name nombre del almacén (por ejemplo, A, B, C...)
+     * @param stock lista de productos (objetos de la clase Product) que se pueden vender desde el almacén
+     * @param ID identificación del nodo almacén (representa su posición en la matriz de adyacencia del grafo)
+     */
+    public Warehouse(String name, ProductList stock, int ID){
+            this.name = name;
+            this.stock = stock;
+            this.ID = ID;
+            this.next = null;
+    }
+    
+    
     /**
      * Getter del atributo name: con él obtienes el nombre del almacén.
      * @return nombre del almacén
@@ -110,11 +125,13 @@ public class Warehouse {
      * @return un string con nombre y cantidad de cada producto del stock o un string vacío si el almacén no tiene stock (lista de productos está vacía).
      */
     public String showStock(){
-        String warehouseStock = "";
+        String warehouseStock = "Almacén "+this.name+"\n";
         if (!this.stock.isEmpty()){
-            warehouseStock += "Almacén " + this.name + "\n";
             warehouseStock += this.stock.showProducts();
+        }else{
+            warehouseStock += "\tAlmacén vacío.\n";
         }
+        warehouseStock += "\n";
         return warehouseStock;
     }
     

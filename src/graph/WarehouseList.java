@@ -49,6 +49,19 @@ public class WarehouseList extends List<Warehouse>{
     }
     
     /**
+     * Método para añadir al final de la lista
+     * @param name nombre del nodo a añadir
+     * @param stock stock del nodo a añadir
+     * @param ID identificación del nodo a añadir
+     * @author Liliana Nóbrega
+     */
+    public void addLast(String name, ProductList stock, int ID){
+        Warehouse n = new Warehouse(name, stock, ID);
+        this.addLast(n);
+    }
+    
+    
+    /**
      * Método que retorna el nodo en la posición de la lista pasada por parámetro.
      * @param position posición del nodo en la lista
      * @return el nodo en la posición pasada por parámetro de la lista
