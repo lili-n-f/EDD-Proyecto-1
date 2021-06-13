@@ -574,7 +574,7 @@ public class Graph {
      * Método para generar el string a imprimir
      * @param source nodo a donde se realiza la solicitud de stock
      * @param target nodo desde el cual se solicita la compra original
-     * @param vertexPath array con el recorrido de los nodos que se ha realizado
+     * @param vertexPath array de índices con el recorrido de los nodos que se ha realizado
      * @param lastDistance número entero con la distancia total
      * @return string con la información deseada
      * @author Ana Tovar
