@@ -5,8 +5,6 @@
  */
 package graph;
 
-import javax.swing.JOptionPane;
-
 /**
  * Clase asociada a una lista simple compuesta por nodos Warehouse
  * @author Ana Tovar
@@ -15,24 +13,39 @@ public class WarehouseList{
     
     private Warehouse head;
     private Warehouse tail;
+    private int size;
     
     /**
-     * Cosntructor
+     * Constructor
      */
     public WarehouseList(){
     
         this.head = null;
         this.tail = null;
+        this.size = 0;
     }
     
+    /**
+     * Destructor de la lista
+     */
+    public void destructor(){
+        this.head = this.tail = null;
+        this.size = 0;
+    }
+    
+    //no sé si sea necesario!!!!!!!!!!!!!!!!!!!!!
     /**
      * Constructor con un nodo dado
      * @param n, nodo Warehouse con el que se desea instanciar la lista
      */
+    /*
     public WarehouseList(Warehouse n){
         this.head = n;
         this.tail = n;
     }
+    */
+    
+    
     
     /**
      * Método para verificar si la lista está vacía o no
@@ -40,27 +53,46 @@ public class WarehouseList{
      */
     public boolean isEmpty(){
         return this.head == null;
-    
     }
     
     /**
-     * Método para recorrer la lista y obtener el tamaño de esta
+     * Método para obtener el tamaño de la lista
      * @return número entero correspondiente al tamaño de la lista
      */
-    public int size(){
-        int i = 0;
-                
-        if (isEmpty()){
-            return 0;
-        }
-        
-        Warehouse aux = this.head;
-            while(aux != null){
-               aux = aux.getNext();
-               i++;   
-            }
-        return i;
-        
+    public int getSize(){
+        return this.size;
+    }
+    
+    /**
+     * Método para obtener el último nodo de la lista
+     * @return la cola de la lista, el nodo elemento
+     */
+    public Warehouse getLast(){
+        return this.tail;
+    }
+    
+    /**
+     * Método para cambiar el último nodo de la lista
+     * @param n nuevo último nodo de la lista
+     */
+    public void setLast(Warehouse n){
+        this.tail = n;
+    }
+    
+    /**
+     * Método para obtener el primer nodo de la lista
+     * @return la cabeza de la lista
+     */
+    public Warehouse getFirst(){
+        return this.head;
+    }
+    
+    /**
+     * Método para cambiar el primer nodo de la lista
+     * @param n nuevo primer nodo de la lista
+     */
+    public void setFirst(Warehouse n){
+        this.head = n;
     }
     
     /**
@@ -68,15 +100,16 @@ public class WarehouseList{
      * @param n, nodo que se desea añadir
      */
     public void addFirst(Warehouse n){
+        
         if (isEmpty()) {
-            this.head = n;
-            this.tail = n;
-            this.head.setNext(this.tail);
+            this.tail = this.head = n;
+            this.head.setNext(null);
             this.tail.setNext(null);
-        } else {
+        }else{
             n.setNext(this.head);
-            this.head = n;
-        }      
+            this.head = n;      
+        }
+        this.size++;
     }
     
     /**
@@ -85,95 +118,108 @@ public class WarehouseList{
      */
     public void addLast(Warehouse n){
         if (isEmpty()) {
-            this.head = n;
-            this.tail = n;
-            this.head.setNext(this.tail);
+            this.head = this.tail = n;
+            this.head.setNext(null);
             this.tail.setNext(null);
         } else {
             this.tail.setNext(n);
             this.tail = n; 
         }
+        this.size++;
     }
+    
+    /**
+     * Método que retorna el nodo en la posición de la lista pasada por parámetro.
+     * @param position posición del nodo en la lista
+     * @return el nodo en la posición pasada por parámetro de la lista
+     * @author Liliana Nóbrega
+     */
+    public Warehouse getNode(int position){
+        if (position>=0 && position<size){
+            Warehouse aux = head;
+            for (int i = 0; i < position; i++){
+                aux = aux.getNext();
+            }
+            return aux;
+        }
+        return null;
+    }
+    
+    /**
+     *  Método para insertar un nodo en una posición pasada por parámetro en la lista
+     * @param n nodo que se desea añadir a la lista
+     * @param position posición en la que se quiere insertar el nodo en la lista
+     * @author Liliana Nóbrega
+     */
+    public void insert(Warehouse n, int position){
+        Warehouse aux = this.getNode(position);
+        if (aux != null){ //si getNode devuelve null, el índice position es inválido
+            if (position == 0){
+                this.addFirst(n);
+            }else{
+                Warehouse prev = this.getNode(position-1);
+                prev.setNext(n);
+                n.setNext(aux);
+                size++;
+            }
+        }
+    }
+    
     
     /**
      * Método void para eliminar el elemento que se encuentra en la primera posición de la lista
      */
     public void deleteFirst(){
-        if (isEmpty()){
-        } else {
-        Warehouse temp = this.head;
-        this.head = this.head.getNext();
-        temp.setNext(null);
+        if (!isEmpty()){
+            if(this.size>1){
+                this.head = this.head.getNext();
+                this.size--;
+            }else{
+                this.destructor();
+            }
         }
     }
+    
     
     /**
      * Método void para eliminar el elemento que se encuentra en la última posición de la lista
      */
     public void deleteLast(){
-        if (isEmpty()){
-        } else {
-        Warehouse aux = this.head;
-        
-        while(aux.getNext().getNext() != null){
-            
-            aux = aux.getNext();
-            
-        }
-        
-        Warehouse temp = aux.getNext();
-        aux.setNext(null);
-        this.tail = aux;
-        temp.setNext(null);
-        }
+        if (!isEmpty()){
+            if (this.size >1){
+                this.tail = this.getNode(size-2); //size-2 es el índice de la penúltima posición de la lista
+                this.tail.setNext(null);
+                size--;
+            }else{
+                this.destructor();
+            }   
+        }    
     }
+    
     
     /**
      * Método para eliminar un nodo en una posición dada
      * @param i, posición d ela lista en la que se desea eliminar el nodo
      */
     public void delete(int i){
-        if (isEmpty()){
-        } else if(i == 0){
-            this.deleteFirst();
-        } else if(i == (size() - 1)){
-            this.deleteLast();
-        } else if(i < 0){
-            this.delete(size() + i);
-        } else if(i > size()){
-            JOptionPane.showMessageDialog(null,"Error. Índice inválido.");
-        } else{
-            Warehouse aux = this.head;
-            int counter = 0;
-            while(counter < i - 1){
-                aux = aux.getNext();
-                counter++;
+        if (!isEmpty()){
+            if (i >= 0 && i< size){
+            
+                if(i == 0){
+                    this.deleteFirst();
+            
+                } else if(i == (size- 1)){
+                    this.deleteLast();
+                
+                } else{
+                    Warehouse prev = this.getNode(i-1);
+                    if (prev != null){
+                        prev.setNext(prev.getNext().getNext());
+                        size--;
+                    }
+                }
+            
             }
-            Warehouse temp = aux.getNext();
-            aux.setNext(temp.getNext());
-            temp.setNext(null);
         }
-    }
-    
-    /**
-     * Método para obtener el último elemento de la lista
-     * @return la cola de la lista, el último elemento
-     */
-    public Warehouse getLast(){
-        if(isEmpty()){
-            return null;
-        }
-        return this.tail;
-    }
-    
-    /**
-     * Método para obtener el primer elemento de la lista
-     * @return la cabeza de la lista
-     */
-    public Warehouse getFirst(){
-        if(isEmpty()){
-            return null;
-        }
-        return this.head;
     }
 }
