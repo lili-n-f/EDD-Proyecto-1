@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package graph;
-import javax.swing.JOptionPane;
 /**
  * Clase asociada a los almacenes, los cuales son los nodos del grafo.
  * @author Liliana Nóbrega

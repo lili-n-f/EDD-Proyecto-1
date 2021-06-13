@@ -11,8 +11,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 /**
- *
- * @author lilin
+ * Clase relacionada a la ventana de interfaz para agregar un nuevo almacén.
+ * @author Liliana Nóbrega
  */
 public class addWarehouseWindow extends javax.swing.JFrame {
 
@@ -22,7 +22,9 @@ public class addWarehouseWindow extends javax.swing.JFrame {
     public static Graph g;
     //quizá necesite poner un public static <nombre de la ventana anterior> prevWindow en todo
     
-    
+    /**
+     * Constructor de addWarehouseWindow
+     */
     /** Creates new form addWarehouseWindow */
     public addWarehouseWindow(Graph g) {
         initComponents();
@@ -175,7 +177,7 @@ public class addWarehouseWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bExistingWarehousesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bExistingWarehousesActionPerformed
-        JTextArea text = new JTextArea(g.getWarehouseNames());
+        JTextArea text = new JTextArea(g.warehouses.getWarehouseNames());
         text.setLineWrap(true);
         JScrollPane scrollPane = new JScrollPane(text);  
         scrollPane.setPreferredSize(new Dimension(200, 300));
@@ -195,7 +197,7 @@ public class addWarehouseWindow extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Debe ingresar un nombre antes de continuar.");
         }else{
             name = nameTxt.getText();
-            if (g.isValidNewWarehouseName(name)){
+            if (!g.warehouses.isWarehouseInList(name)){
                 Warehouse w = new Warehouse(name);
                 nameTxt.setEnabled(false);
                 bSubmitName.setEnabled(false);

@@ -147,4 +147,59 @@ public class WarehouseList extends List<Warehouse>{
             }
         }
     }
+    
+    /**
+     * Método que devuelve el almacén con el nombre pasado por parámetro
+     * @param name nombre del almacén que se busca
+     * @return el nodo, si encuentra al almacén, o null si el almacén con el nombre name no existe en la lista.
+     */
+    public Warehouse getWarehouse(String name){
+        Warehouse aux = this.head;
+        while (aux != null){ //si la lista estuviera vacía, head == null, por tanto aux == null y no se entraría en el ciclo. si la lista no está vacía, si aux llega a ser null significa que ya recorrió toda la lista y NO consiguió a un nodo con el name pasado por parámetro.
+            if (aux.getName().equals(name)){
+                return aux;
+            }
+        }
+        return null;
+    
+    }
+    
+    /**
+     * Método que devuelve el almacén con el ID igual al índice i pasado por parámetro
+     * @param i ID del almacén que se busca
+     * @return el nodo, si encuentra al almacén, o null si el almacén con el ID i no existe en la lista.
+     */
+    public Warehouse getWarehouseWithID(int i){
+        Warehouse aux = this.head;
+        while (aux != null){ //si la lista estuviera vacía, head == null, por tanto aux == null y no se entraría en el ciclo. si la lista no está vacía, si aux llega a ser null significa que ya recorrió toda la lista y NO consiguió a un nodo con el name pasado por parámetro.
+            if (aux.getID() == i){
+                return aux;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Método que determina si un almacén, a partir de su nombre, existe en la lista
+     * @param name nombre de un posible almacén de la lista, del cual se busca saber si en realidad está en la lista
+     * @return false si el mismo NO se encuentra en la lista de almacenes, o true si el nombre del almacén se encuentra en la lista. (ya que getWarehouse retorna null cuando no consigue el almacén con ese nombre y retorna el nodo con ese nombre cuando sí lo consigue)
+     */
+    public boolean isWarehouseInList(String name){
+        return getWarehouse(name) != null; 
+    }
+    
+    /**
+     * Método que devuelve los nombres de cada almacén en la lista.
+     * @return cadena con los nombres de cada almacén en la lista
+     */
+    public String getWarehouseNames(){
+        String warehouseNames = "";
+        Warehouse aux = head;
+        while (aux != null){
+            warehouseNames += aux.getName() + "\n";
+            aux = aux.getNext();
+        }
+        return warehouseNames;
+    }
+    
 }
