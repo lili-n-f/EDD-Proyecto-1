@@ -12,16 +12,16 @@ import javax.swing.JOptionPane;
 public class Warehouse {
 
     private String name;
-    private Product[] stock; //CAMBIAAAAAAAAAAAAAAAAR
+    private ProductList stock;
     private int ID;
     private Warehouse next;
 
     /**
      * Constructor de la clase Warehouse
      * @param name nombre del almacén (por ejemplo, A, B, C...)
-     * @param stock array de productos (objetos de la clase Product) que se pueden vender desde el almacén
+     * @param stock lista de productos (objetos de la clase Product) que se pueden vender desde el almacén
      */
-    public Warehouse(String name, Product[] stock){
+    public Warehouse(String name, ProductList stock){
             this.name = name;
             this.stock = stock;
             this.ID = -1;
@@ -36,7 +36,7 @@ public class Warehouse {
      */
     public Warehouse(String name){
             this.name = name;
-            this.stock = new Product [0]; //CAMBIAAAAAAAAAAAAAAAAAAAAAAAR
+            this.stock = new ProductList();
             this.ID = -1;
     }
 
@@ -74,18 +74,18 @@ public class Warehouse {
     
     
     /**
-     * Getter del atributo stock: con él obtienes el array de productos que se pueden vender desde el almacén.
-     * @return array de productos que se pueden vender desde el almacén
+     * Getter del atributo stock: con él obtienes la lista de productos que se pueden vender desde el almacén.
+     * @return lista de productos que se pueden vender desde el almacén
      */
-    public Product[] getStock(){
+    public ProductList getStock(){
             return this.stock;
     }
 
     /**
-     * Setter del atributo stock: con él puedes darle un nuevo array de productos que se pueden vender al almacén.
-     * @param newStock nuevo array de productos que se pueden vender al almacén
+     * Setter del atributo stock: con él puedes darle una nueva lista de productos que se pueden vender al almacén.
+     * @param newStock nueva lista de productos que se pueden vender al almacén
      */
-    public void setStock(Product[] newStock){
+    public void setStock(ProductList newStock){
             this.stock = newStock;
     }
 
@@ -104,73 +104,17 @@ public class Warehouse {
     public void setID(int newID){
             this.ID = newID;
     }
-
-    //CAMBIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR
-    /**
-     * Método para incrementar la cantidad de un producto que se tiene en el stock.
-     * @param name nombre del producto cuya cantidad se desea incrementar.
-     * @param ammount cantidad de unidades del producto que se desean incrementar.
-     */
-    public void increaseProductStock(String name, int ammount){
-        if(this.stock.length>0){
-            Product aux = null;
-            for (Product product : this.stock){
-                if (product.getName().equalsIgnoreCase(name)){
-                    aux = product;
-                    break;
-                }
-            }
-            if (aux != null){
-                aux.buyProduct(ammount);
-                JOptionPane.showMessageDialog(null, "Stock del producto fue incrementado exitosamente.");
-            }else{
-                JOptionPane.showMessageDialog(null, "El producto no está en el stock del almacén.");
-            }
-        }else{
-            JOptionPane.showMessageDialog(null, "El stock de este almacén está vacío.");
-        }
-    }
     
-    //CAMBIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR
-    /**
-     * Método que permite añadir un nuevo producto al array de productos que se pueden vender en el almacén.
-     * @param productName nombre del producto a añadir
-     * @param productAmmount cantidad disponible del producto a añadir
-     */
-    public void addProductToStock(String productName, int productAmmount){ //esto es para la parte de gestión de stock!!
-            boolean isNewProduct = true;
-            for (Product product : this.stock){
-                    if (product.getName().equals(productName)){
-                            JOptionPane.showMessageDialog(null, "El producto que se intenta añadir ya se encuentra en el almacén.");
-                            isNewProduct = false;
-                            break;
-                    }
-            }
-            if (isNewProduct){
-                    Product newProduct = new Product(productName, productAmmount);
-                    Product[] newStock = new Product[this.stock.length+1];
-                    int i = 0;
-                    for (; i < this.stock.length; i++){
-                            newStock[i] = this.stock[i];
-                    }
-                    newStock[i] = newProduct;
-                    this.setStock(newStock);
-                    JOptionPane.showMessageDialog(null, "El producto fue añadido con éxito.");
-            }
-    }
-    
-    //CAMBIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR
+   
     /**
      * Método que retorna un string con el nombre y cantidad de cada producto en el stock del almacén (si es que tiene stock).
-     * @return un string con nombre y cantidad de cada producto del stock o un string vacío si el almacén no tiene stock.
+     * @return un string con nombre y cantidad de cada producto del stock o un string vacío si el almacén no tiene stock (lista de productos está vacía).
      */
     public String showStock(){
         String warehouseStock = "";
-        if (this.stock.length>0){
-            warehouseStock = "Almacén " + this.name + "\n";
-            for (Product product : this.stock){
-                warehouseStock += product.getName() + " x" + product.getAmmount() + "\n";
-            }
+        if (!this.stock.isEmpty()){
+            warehouseStock += "Almacén " + this.name + "\n";
+            warehouseStock += this.stock.showProducts();
         }
         return warehouseStock;
     }

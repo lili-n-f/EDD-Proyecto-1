@@ -87,6 +87,14 @@ public class Product {
     public void buyProduct(int ammountBought){
 		this.ammount += ammountBought; 
 	}
+    
+    /**
+     * Método que retorna la información del nodo producto (su nombre y cantidad)
+     * @return string con el nombre y cantidad del producto
+     */
+    public String showInfo(){
+        return this.name + " x" + this.ammount + "\n";
+    }
 
 }
 

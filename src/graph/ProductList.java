@@ -5,6 +5,8 @@
  */
 package graph;
 
+import javax.swing.JOptionPane;
+
 /**
  * Clase asociada a una lista simple compuesta por nodos Product
  * @author Liliana Nóbrega y Ana Tovar
@@ -122,7 +124,7 @@ public class ProductList extends List<Product> {
     
     /**
      * Método para eliminar un nodo en una posición dada
-     * @param i, posición d ela lista en la que se desea eliminar el nodo
+     * @param i posición de la lista en la que se desea eliminar el nodo
      */
     @Override
     public void delete(int i){
@@ -145,6 +147,85 @@ public class ProductList extends List<Product> {
             
             }
         }
+    }
+    
+    /**
+     * Método para conseguir un nodo de clase Product a partir de su nombre
+     * @param name string con el nombre del producto cuyo nodo se busca
+     * @return el nodo cuyo nombre es el pasado por parámetro, o null si un producto con ese nombre no existe en la lista.
+     */
+    private Product getProductWithName(String name){
+        if(!this.isEmpty()){
+            Product aux = this.head;
+            while (aux != null) {
+                if (aux.getName().equalsIgnoreCase(name)){
+                    return aux;
+                }
+                aux = aux.getNext();
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Método que determina si un determinado producto ya está en la lista a partir de su nombre
+     * @param name nombre del producto cuya pertenencia a la lista se desea conocer
+     * @return true si el producto está en la lista, false si no (ya que getProductWithName retorna el nodo con el nombre pasado como parámetro si lo consigue o null si no lo consigue)
+     */
+    public boolean isProductInList(String name){
+        return this.getProductWithName(name)!=null;
+    }
+    
+    
+    /**
+     * Método para incrementar la cantidad de un producto que se tiene en la lista
+     * @param name nombre del producto cuya cantidad se desea incrementar.
+     * @param ammount cantidad de unidades del producto que se desean incrementar.
+     */
+    public void increaseProductStock(String name, int ammount){
+        if (!this.isEmpty()){
+            Product aux = this.getProductWithName(name);
+            if (aux != null){
+                aux.buyProduct(ammount);
+                JOptionPane.showMessageDialog(null, "Stock del producto fue incrementado exitosamente.");
+            }else{
+                //Si el método getProductWithName retornó null, esto significa que recorrió toda la lista y no consiguió el nombre del producto
+                JOptionPane.showMessageDialog(null, "El producto no está en el stock del almacén.");
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "El stock de este almacén está vacío.");
+        }
+    }
+    
+    /**
+     * Método que permite añadir un nuevo producto a la lista de productos que se pueden vender en un almacén.
+     * @param name nombre del producto a añadir
+     * @param ammount cantidad disponible del producto a añadir
+     */
+    public void addNewProductToStock(String name, int ammount){
+        if (this.isProductInList(name)){ 
+            JOptionPane.showMessageDialog(null, "El producto que se intenta añadir ya se encuentra en el almacén.");
+        }else{ 
+            Product aux = new Product(name, ammount);
+            this.addLast(aux);
+            JOptionPane.showMessageDialog(null, "El producto fue añadido con éxito.");
+        }
+    }
+    
+    /**
+     * Método que devuelve un string con toda la información de cada producto en la lista
+     * @return string con los nombres y cantidades de cada producto de la lista, o un string vacío si la lista está vacía
+     */
+    public String showProducts(){
+        String productsInfo = "";
+        if (!this.isEmpty()){
+            Product aux = head;
+            while (aux!=null){
+                productsInfo += aux.showInfo();
+                aux = aux.getNext();
+            }
+        }
+        return productsInfo;
     }
     
 }
