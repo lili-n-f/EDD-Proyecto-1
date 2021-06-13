@@ -147,4 +147,18 @@ public class WarehouseList extends List<Warehouse>{
             }
         }
     }
+    
+    /**
+     * Método que determina si un nombre pasado por parámetro es válido para un nuevo almacén (es decir, que el nombre sea distinto a los nombres de los almacenes anteriores guardados en la lista)
+     * @param name nombre de un posible nuevo almacén del cual se busca saber si es válido
+     * @return false si el mismo se encuentra en la lista de almacenes, o verdadero si el nombre del almacén no existe en el grafo.
+     */
+    public boolean isValidNewWarehouseName(String name){
+        if (!this.isEmpty()){
+            
+        }else{
+            return true; //si no hay ningún almacén, cualquier nombre es válido
+        } 
+    }
+    
 }

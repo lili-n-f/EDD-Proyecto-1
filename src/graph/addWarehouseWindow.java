@@ -11,8 +11,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 /**
- *
- * @author lilin
+ * Clase relacionada a la ventana de interfaz para agregar un nuevo almacén.
+ * @author Liliana Nóbrega
  */
 public class addWarehouseWindow extends javax.swing.JFrame {
 
@@ -22,7 +22,9 @@ public class addWarehouseWindow extends javax.swing.JFrame {
     public static Graph g;
     //quizá necesite poner un public static <nombre de la ventana anterior> prevWindow en todo
     
-    
+    /**
+     * Constructor de addWarehouseWindow
+     */
     /** Creates new form addWarehouseWindow */
     public addWarehouseWindow(Graph g) {
         initComponents();
