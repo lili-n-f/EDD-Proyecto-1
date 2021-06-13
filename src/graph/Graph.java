@@ -587,4 +587,162 @@ public class Graph {
         return toPrintDik;
     }
     
+    /**
+     * Método para obtener el camino más corto según el algoritmo de Floyd-Wharshall de TODOS los nodos
+     * @return una matriz con las distancias totales más cortas entre los nodos, ya que al tener varios candidatos, resultará más fácil obtenerlo de esta manera
+     * @author Ana Tovar
+     */
+    public int[][] FloydWarshall(){
+        int [][] distanceMatrix = new int[vertexNumber][vertexNumber];
+        int INF = Integer.MAX_VALUE;
+        
+        for(int i = 0; i < vertexNumber; i++){
+            for(int j = 0; j < vertexNumber; j++){
+                if(adjMatrix[i][j] == 0){
+                    distanceMatrix[i][j] = INF;
+                }else{
+                    distanceMatrix[i][j] = adjMatrix[i][j];
+                }
+            }
+        }
+        
+        for(int k = 0; k < vertexNumber; k++){ // El algoritmo Floyd Warshall usa un par de datos, por lo que se necesita este otro for loop con el contador k
+            for(int i = 0; i < vertexNumber; i++){
+                for(int j = 0; j < vertexNumber; j++){
+                    if(distanceMatrix[i][k] + distanceMatrix[k][j] < distanceMatrix[i][j]){ // distanceMatrix[i][j] originalmente guarda el dato de la matriz original, este se va a ir actualizando a la distancia total más corta entre los nodos
+                        distanceMatrix[i][j] = distanceMatrix[i][k] + distanceMatrix[k][j];
+                    } 
+                }
+            }
+        }
+        
+        return distanceMatrix;
+    }
+    
+    /**
+     * Método para conseguir el string con la información del recorrido de Floyd Warshal
+     * @param source nodo al que se le realiza la solicitud de stock
+     * @param target nodo al cual se le hace la compra original
+     * @param distanceMatrix matriz de distancias totales, obtenidas del método anterior
+     * @return un string con la información deseada de esta función
+     * @author Ana Tovar
+     */
+    public String FloydWarshallSP(Warehouse source, Warehouse target, int [][] distanceMatrix){
+        int start = source.getID();
+        int finish = target.getID();
+        int INF = Integer.MAX_VALUE;
+        String toPrintFW = "";
+        
+        toPrintFW += "Distancia total, " + distanceMatrix[start][finish] + "\n" + "El recorrido empieza en " + source.getName() + " Pasa por: " + "\n"; // Me appendea al string la distancia total entre ambos nodos
+        
+        while(start != finish){
+            toPrintFW += getVertex(start).getName() + " --> ";
+            start = distanceMatrix[start][finish];
+        }
+        
+        toPrintFW += target.getName(); // Añade al último almacén, que es el del pedido original
+        
+        return toPrintFW;
+       
+    }
+    
+    /**
+     * Método para realizar pedido
+     * @param shop Almacén desde donde se hace el pedido original
+     * @param shopping Producto que se está comprando en esta iteración
+     * @param shortPath Booleano para saber si es Dijkstra o Floyd-Warshall, input del usuario
+     * @return string recibo que imprimirá el producto junto con su cantidad comprada
+     * @author Ana Tovar
+     */
+    public String Buy(Warehouse shop, Product shopping, boolean shortPath){ // shortPath, true para Dijkstra, false para Floyd-Warshal. Obvio esto cambiará pero es para visualizar
+        
+        String receipt = "";
+        
+        Product[] products = shop.getStock();
+
+        for(Product product: products){
+
+            if(product.getName().equals(shopping.getName()) && product.getAmmount() >= shopping.getAmmount()){ // Si todo va perfecto, se hace el cambio inmediatamente
+                
+                
+                receipt += shopping.getName() + " x" + shopping.getAmmount() + "\n";
+                product.sellProduct(shopping.getAmmount());
+                
+                
+            } else if (product.getName().equals(shopping.getName()) && product.getAmmount() < shopping.getAmmount()){ // O un else simple? Para discutir
+
+                Product request = new Product(shopping.getName(), (product.getAmmount() - shopping.getAmmount())); // Producto a comparar. Se guarda para mejor manejo
+                
+                Warehouse requestShop = null; // Almacén definitivo
+                
+                Warehouse[] available = availability(request); // Lista de candidatos
+                
+                if(available == null){
+                    JOptionPane.showMessageDialog(null, "Ningún otro almacén posee stock del producto: " + shopping.getName() + "\n Por lo que la compra de este no fue registrada.");
+                } else{
+                    
+                    int minimum = Integer.MAX_VALUE;
+
+                    for (Warehouse candidate: available) { // De aquí se obtienen el warehouse REALMENTE cercano y se actualiza la info del recibo
+                    
+                        if(shortPath){ // Dijkstra
+
+                                String toPrint = dijkSP(candidate, shop);
+                                
+                                String[] lines = toPrint.split("\n");
+                                
+                                String newline = lines[0];
+                                
+                                String[] distanceLine = newline.split(", ");
+                                
+                                int distance = Integer.parseInt(distanceLine[1]);
+                                
+                                if(distance < minimum){
+                                    
+                                    minimum = distance;
+                                    
+                                    receipt = toPrint;
+                                    
+                                    requestShop = candidate;
+                                }
+                                        
+                        } else{ //Floyd-Warshall
+
+                            int[][] distanceMatrix = FloydWarshall();
+
+                            if(distanceMatrix[candidate.getID()][shop.getID()] < minimum){
+
+                                minimum = distanceMatrix[candidate.getID()][shop.getID()];
+
+                                receipt = FloydWarshallSP(candidate, shop, distanceMatrix); // Ya esto me retornará receipt = al string con la información correspondiente
+                                
+                                requestShop = candidate;
+                            }
+
+                        }
+               
+                    } 
+                    
+                    if(requestShop != null){
+                        Product[] definitiveStock = warehouses[requestShop.getID()].getStock();
+                        for(Product definitive: definitiveStock){
+                            if(definitive.getName().equalsIgnoreCase(request.getName())){
+                                definitive.sellProduct(request.getAmmount());
+                                receipt += "\n" + request.getName() + " x" + request.getAmmount();
+                            }
+                        }   
+
+                    } else {
+                        JOptionPane.showMessageDialog(null,"No hay ningún almacén que pueda proveer el producto " + request.getName());
+                        return null;
+                    }
+                }
+            
+            }
+
+        }
+        
+        return receipt;
+    }
+    
 }
