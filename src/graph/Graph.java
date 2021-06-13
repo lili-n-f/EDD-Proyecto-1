@@ -476,30 +476,25 @@ public class Graph {
     /**
      * Método para obtener los almacenes candidatos a pedir más stock
      * @param request es un nodo Product el cual se solicita a otros almacenes
-     * @return un array de nodos Warehouse que son elegibles para ser el almacén desde el que se solicita el stock extra
+     * @return una lista de nodos Warehouse que son elegibles para ser el almacén desde el que se solicita el stock extra
      * @author Ana Tovar
      */     
-    public Warehouse[] availability(Product request){
-        Warehouse[] available = new Warehouse[warehousesInGraph];
-        int i = 0;
+    public WarehouseList availability(Product request){
+        WarehouseList available = new WarehouseList(); // se crea una array nuevo, con valores null inicialmente
         for(Warehouse warehouse: warehouses){
             Product [] products = warehouse.getStock();
             for(Product product: products){
                 if(product.getName().equals(request.getName()) && product.getAmmount() >= request.getAmmount()){ // Se confirma que el almacén tenga no solo el producto sino la cantidad necesaria de este
-                    available[i] = warehouse;
+                    available.addLast(warehouse);
                 }
             }
-            
-            i++;
         }
-        
-        for(Warehouse node: available){
-            if(node != null){
-                return available;
-            }
+        if(available.isEmpty()){
+            JOptionPane.showMessageDialog(null, "No hay ningún almacén que tenga más stock del producto."); // Esto lo que verifica es que si no hay ningún dato en la lista available, es porque ningún almacén cumple con los requisitos para que se solicite dicho producto
+            return null;
         }
-        
-        return null;
+
+        return available;
     }
 
     
