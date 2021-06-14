@@ -10,18 +10,20 @@ package graph;
  * @author Liliana Nóbrega
  */
 public class Product {
-	private String name;
-	private int ammount;
-        private Product next;
+
+    private String name;
+    private int ammount;
+    private Product next;
 	
     /**
      * Constructor de la clase Product
      * @param name es el nombre del producto
      * @param ammount es la cantidad disponible que se tiene de ese producto
      */
+    
     public Product(String name, int ammount){
-		this.name = name;
-		this.ammount = ammount;
+	this.name = name;
+	this.ammount = ammount;
 	}
 
     /**
