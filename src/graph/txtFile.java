@@ -5,6 +5,9 @@
  */
 package graph;
 
+//import java.io.BufferedReader;
+//import java.io.File;
+//import java.io.FileReader;
 import java.io.PrintWriter;
 import javax.swing.JOptionPane;
 
@@ -47,8 +50,38 @@ public class txtFile {
         }catch (Exception e){
             JOptionPane.showMessageDialog(null, "Error al guardar en archivo de texto.");
         }
-        
-        
-        
     }
-}
+    /*No dio tiempo jaja
+    public static Graph ReadTxt(){
+        File file = new FIle("test\\amazon.txt");
+        String line;
+        String text = "";
+        try{
+            if (!file.exists()){
+                file.createNewFile();
+            }
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            String[] info = br.toString().split("Rutas;");
+            String [] warehouses = info[0].split(";");
+            String [] routes = info[1].split("\n");
+            
+            String [] wh_inf;
+            for(String wh : warehouses){
+                if(!wh.equals("Almacenes")){
+                    wh_inf = wh.split("\n");
+                    for (String w : wh_inf){
+                        if (w.contains(":")){
+                            String name = w.split(" ")[1];
+                            
+                        }
+                    }
+                }
+            }
+            
+        }catch{
+        }
+    
+    }
+    */
+}       

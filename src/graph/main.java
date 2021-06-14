@@ -16,7 +16,7 @@ public class main {
      */
     public static void main(String[] args) {
         //para probar
-        Graph g = new Graph(3); //no estoy segura si haciendo esto con static ya no tendría que pasarles el grafo como parámetro??? that would be useful
+        Graph g = new Graph(3); 
         Warehouse w1 = new Warehouse("a");
         Warehouse w2 = new Warehouse("b");
         Warehouse w3 = new Warehouse("c");
@@ -27,11 +27,7 @@ public class main {
         g.addArch(w2.getName(), w1.getName(), 2);
         g.addArch(w3.getName(), w1.getName(), 3);
         g.addArch(w2.getName(), w3.getName(), 4);
-        //addWarehouseWindow w = new addWarehouseWindow(g);
-        //deleteWarehouseWindow w = new deleteWarehouseWindow(g);
         mainWindow w = new mainWindow(g);
-        //System.out.println(g.dfs());
-        //System.out.println(g.warehouses.getWarehouseNames());
         
     }
     
