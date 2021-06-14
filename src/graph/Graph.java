@@ -392,6 +392,98 @@ public class Graph {
     
     
     /**
+    * Método para realizar pedido. Determina si se puede completar el pedido a partir del almacén original, o si existe otro almacén que pueda completar la orden. De lo contrario, no se realiza el pedido.
+    * @param warehouseToBuy Almacén desde donde se hace el pedido original
+    * @param order lista de productos ordenados del almacén
+    * @param shortPath Booleano para saber si se buscaría el almacén más cercano que complete la orden por Dijkstra (si es true) o Floyd-Warshall (si es false), según el input del usuario
+    * @return un string anunciando si no se completó la orden o la orden fue completada con el almacén escogido, o un string con la información del recorrido desde el almacén complementario hasta el almacén escogido para el pedido.
+    * @author Liliana Nóbrega y Ana Tovar
+    */
+    public String buy(Warehouse warehouseToBuy, ProductList order, boolean shortPath){
+        Product orderedP, inWarehouse;
+        ProductList toOrderFromWarehouse, missingOrder, warehouseProds;
+        warehouseProds = warehouseToBuy.getStock();
+        missingOrder = new ProductList();
+        toOrderFromWarehouse = new ProductList();
+        
+        for (int i=0; i<order.getSize(); i++){
+            orderedP = order.getNode(i);
+            inWarehouse = warehouseProds.getProductWithName(orderedP.getName());
+            if (inWarehouse != null){ //entonces ese producto está en el almacén original
+                    if (inWarehouse.getAmmount()<orderedP.getAmmount()){ //el almacén original no tiene suficiente para completar la orden
+                            toOrderFromWarehouse.addLast(orderedP.getName(), inWarehouse.getAmmount()); //se añade a la lista de productos a ordenar del almacén original al producto ordenado con la cantidad que tiene el almacén.
+                            missingOrder.addLast(orderedP.getName(), (orderedP.getAmmount()-inWarehouse.getAmmount())); //necesitas completar lo que no puede el almacén original
+                    }else{ //si la cantidad en el almacén es mayor o igual a la ordenada, no se añade a missingOrder, sino todo a toOrderFromWarehouse
+                            toOrderFromWarehouse.addLast(orderedP.getName(), orderedP.getAmmount());
+                    }
+            }else{
+                //porque el almacén no tiene NADA de lo que se ordenó de este producto  
+                    missingOrder.addLast(orderedP.getName(), orderedP.getAmmount());
+            }
+        }
+        
+        if (missingOrder.isEmpty()){ //significa que toda la orden se completa del almacén original y no hay que buscar cómo completarla con otro almacén
+            for (int i = 0; i<order.getSize(); i++){
+                orderedP = order.getNode(i);
+                warehouseProds.sellProduct(orderedP);
+            }
+            return "La orden puede ser completada exitosamente a partir\ndel almacén escogido. Gracias por su compra.";
+        }else{
+            
+            WarehouseList available = availability(warehouseToBuy, missingOrder);
+            Warehouse complementaryWarehouse = null; //esto sería el almacén al cual se le haría el pedido para poder completar la orden del usuario
+            
+            if (available!=null){ 
+                int minDistance = Integer.MAX_VALUE; //se inicializa en el máximo valor de los enteros para facilitar la comparación con el fin de conseguir cuál de los almacenes tiene una menor distancia a
+                String path = null, aux;
+                Warehouse candidate;
+                
+                for (int index = 0; index < available.getSize(); index++) {
+                    
+                    candidate = available.getNode(index); 
+                    
+                    //A continuación, se busca el camino más corto entre cada candidato (almacenes que tienen la posibilidad de completar la orden según su stock) y el almacén escogido para realizar el pedido (warehouseToBuy).
+                    
+                    if(shortPath){ // Dijkstra
+                        aux = dijkSP(candidate, warehouseToBuy);
+                    }else{ //Floyd-Warshall
+                        aux = FloydWarshall(candidate, warehouseToBuy);
+                    }    
+                    
+                    if (aux!=null){
+                        
+                        String[] lines = aux.split("\n");
+                        String firstLine = lines[0];
+                        String[] distanceLine = firstLine.split(", ");
+                        
+                        int distance = Integer.parseInt(distanceLine[1]);
+                        
+                        if(distance < minDistance){
+                            minDistance = distance;
+                            path = aux;
+                            complementaryWarehouse = candidate;
+                        }  
+                    }
+                }
+                
+                if (complementaryWarehouse != null){ //entonces se encontró el almacén más cercano y conectado al almacén escogido que puede completar la orden
+                    for (int i = 0; i<toOrderFromWarehouse.getSize(); i++){
+                        orderedP = toOrderFromWarehouse.getNode(i);
+                        warehouseProds.sellProduct(orderedP); //se descuenta todo lo que se puede descontar del stock del almacén original
+                    }
+                    for (int i = 0; i<missingOrder.getSize(); i++){
+                        orderedP = missingOrder.getNode(i);
+                        complementaryWarehouse.getStock().sellProduct(orderedP); //y también se descuenta todo lo que aporta el almacén complementario a la orden de su stock
+                    }
+                    return path; //se devuelve la información del recorrido desde el complementario al original
+                }
+            }
+        }
+        return "No hay ningún almacén conectado al almacén escogido\nque tenga más stock de al menos uno de los productos,\npor lo que el pedido ha sido cancelado.\nGracias por su comprensión."; //si se llegó hasta aquí sin haber retornado un mensaje, es que no se logró conseguir un almacén que complementara en el pedido
+    }
+    
+    
+    /**
      * Método para mostrar los almacenes candidatos a pedir más stock
      * @param request es un ProductList el cual se solicita a otros almacenes
      * @param shop es el nodo Warehouse desde donde se está realizando la compra
@@ -404,26 +496,30 @@ public class Graph {
         
         for(int index = 0; index < warehouses.getSize(); index++){
             if (index != shop.getID()){ //el almacén que complete la orden debe ser distinto al almacén original que no logró completar la orden en primer lugar
-                ProductList products = warehouses.getNode(index).getStock();
+                Warehouse pAux = warehouses.getNode(index);
+                
+                if (pAux != null){
+                        ProductList products = pAux.getStock();
 
-                boolean isWarehouseValid = true;
+                    boolean isWarehouseValid = true;
 
-                for(int j = 0; j < request.getSize(); j++){
+                    for(int j = 0; j < request.getSize(); j++){
 
-                    boolean isproduct = products.isProductInList(request.getNode(j).getName());
+                        boolean isproduct = products.isProductInList(request.getNode(j).getName());
 
-                    if(!isproduct || products.getProductWithName(request.getNode(j).getName()).getAmmount() < request.getNode(j).getAmmount()){ // Se confirma que el almacén tenga no solo el producto sino la cantidad necesaria de este
-                        isWarehouseValid = false;
-                        break;
+                        if(!isproduct || products.getProductWithName(request.getNode(j).getName()).getAmmount() < request.getNode(j).getAmmount()){ // Se confirma que el almacén tenga no solo el producto sino la cantidad necesaria de este
+                            isWarehouseValid = false;
+                            break;
+                        }
+                    }
+                    if(isWarehouseValid){
+                      available.addLast(warehouses.getNode(index));
                     }
                 }
-                if(isWarehouseValid){
-                  available.addLast(warehouses.getNode(index));
-                }  
             }
         }
         if(available.isEmpty()){
-            JOptionPane.showMessageDialog(null, "No hay ningún almacén que tenga más stock del producto."); // Esto lo que verifica es que si no hay ningún dato en la lista available, es porque ningún almacén cumple con los requisitos para que se solicite dicho producto
+            // Esto lo que verifica es que si no hay ningún dato en la lista available, es porque ningún almacén cumple con los requisitos para que se solicite dicho producto
             return null;
         }
         return available;
@@ -598,48 +694,5 @@ public class Graph {
         
         return toPrintFW;
     }
-  
-
-     /**
-     * Método para realizar pedido. Determina si se puede completar el pedido a partir del almacén original, o si existe otro almacén que pueda completar la orden. De lo contrario, no se realiza el pedido.
-     * @param warehouseToBuy Almacén desde donde se hace el pedido original
-     * @param order lista de productos ordenados del almacén
-     * @param shortPath Booleano para saber si se buscaría el almacén más cercado que complete la orden por Dijkstra (si es true) o Floyd-Warshall (si es false), según el input del usuario
-     * @author Liliana Nóbrega y Ana Tovar
-     */
-    public void buy(Warehouse warehouseToBuy, ProductList order, boolean shortPath){
-        Product orderedP, inWarehouse;
-        ProductList toOrderFromWarehouse, missingOrder, warehouseProds;
-        warehouseProds = warehouseToBuy.getStock();
-        missingOrder = new ProductList();
-        toOrderFromWarehouse = new ProductList();
-        
-        for (int i=0; i<order.getSize(); i++){
-            orderedP = order.getNode(i);
-            inWarehouse = warehouseProds.getProductWithName(orderedP.getName());
-            if (inWarehouse != null){ //entonces ese producto está en el almacén original
-                    if (inWarehouse.getAmmount()<orderedP.getAmmount()){ //el almacén original no tiene suficiente para completar la orden
-                            toOrderFromWarehouse.addLast(orderedP.getName(), inWarehouse.getAmmount()); //se añade a la lista de productos a ordenar del almacén original al producto ordenado con la cantidad que tiene el almacén.
-                            missingOrder.addLast(orderedP.getName(), (orderedP.getAmmount()-inWarehouse.getAmmount())); //necesitas completar lo que no puede el almacén original
-                    }else{ //si la cantidad en el almacén es mayor o igual a la ordenada, no se añade a missingOrder, sino todo a toOrderFromWarehouse
-                            toOrderFromWarehouse.addLast(orderedP.getName(), orderedP.getAmmount());
-                    }
-            }else{
-                //porque el almacén no tiene NADA de lo que se ordenó de este producto  
-                    missingOrder.addLast(orderedP.getName(), orderedP.getAmmount());
-            }
-        }
-        
-        if (missingOrder.isEmpty()){ //significa que toda la orden se completa del almacén original y no hay que buscar cómo completarla con otro almacén
-            JOptionPane.showMessageDialog(null, "La orden puede ser completada exitosamente a partir del almacén escogido. Gracias por su compra.");
-            for (int i = 0; i<order.getSize(); i++){
-                orderedP = order.getNode(i);
-                warehouseProds.sellProduct(orderedP);
-            }
-
-        }else{ //AQUÍ ES DONDE SE BUSCAN EL ÚNICO ALMACÉN QUE COMPLETE TOOOOODOOOOOOO
-            //TODO
-        }
     
-    }
 }

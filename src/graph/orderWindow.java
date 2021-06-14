@@ -6,6 +6,10 @@
 
 package graph;
 import javax.swing.JOptionPane;
+import java.awt.Dimension;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 /**
  * Clase asociada a la interfaz de la ventana donde se realiza un pedido
  * @author Liliana Nóbrega
@@ -77,6 +81,8 @@ public class orderWindow extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -89,8 +95,8 @@ public class orderWindow extends javax.swing.JFrame {
         jLabel11.setText("REALIZAR PEDIDO: primero, escoja por cuál método se");
         jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, -1, -1));
 
-        jLabel12.setText("Luego, introduzca el nombre del producto a ordenar y la cantidad.");
-        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 330, 10));
+        jLabel12.setText("Luego, introduzca el producto y la cantidad.");
+        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 360, 20));
 
         productNameTxt.setText("Primero escoge el tipo de recorrido");
         jPanel1.add(productNameTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 210, 210, -1));
@@ -104,7 +110,7 @@ public class orderWindow extends javax.swing.JFrame {
                 bAddOrderActionPerformed(evt);
             }
         });
-        jPanel1.add(bAddOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 240, 140, 30));
+        jPanel1.add(bAddOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 240, 170, 30));
 
         bFinishOrder.setText("TERMINAR ORDEN");
         bFinishOrder.addActionListener(new java.awt.event.ActionListener() {
@@ -138,7 +144,7 @@ public class orderWindow extends javax.swing.JFrame {
         jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 310, 10));
 
         jLabel13.setText("Después de agregar al carrito, puede ingresar otro producto");
-        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, 340, 20));
+        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, 370, 20));
 
         bGoBack.setText("< Volver");
         bGoBack.addActionListener(new java.awt.event.ActionListener() {
@@ -151,7 +157,7 @@ public class orderWindow extends javax.swing.JFrame {
         jLabel4.setText("o terminar.");
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, -1, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 350, 330));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 360, 330));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -216,7 +222,12 @@ public class orderWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_bAddOrderActionPerformed
 
     private void bFinishOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bFinishOrderActionPerformed
-        g.buy(w, order, shortPath);
+        JTextArea text = new JTextArea(g.buy(w, order, shortPath));
+        text.setLineWrap(false);
+        JScrollPane scrollPane = new JScrollPane(text);  
+        scrollPane.setPreferredSize(new Dimension(300, 300));
+        JOptionPane.showMessageDialog(null, scrollPane, "Información de pedido.", JOptionPane.INFORMATION_MESSAGE);
+        
         prevWindow.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_bFinishOrderActionPerformed
@@ -258,8 +269,6 @@ public class orderWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAddOrder;
-    private javax.swing.JButton bBack;
-    private javax.swing.JButton bBack1;
     private javax.swing.JButton bDijkstra;
     private javax.swing.JButton bFinishOrder;
     private javax.swing.JButton bFloydWarshall;

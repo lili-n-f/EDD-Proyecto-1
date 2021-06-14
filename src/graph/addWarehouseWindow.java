@@ -187,7 +187,7 @@ public class addWarehouseWindow extends javax.swing.JFrame {
         JTextArea text = new JTextArea(g.warehouses.getWarehouseNames());
         text.setLineWrap(false);
         JScrollPane scrollPane = new JScrollPane(text);  
-        scrollPane.setPreferredSize(new Dimension(200, 300));
+        scrollPane.setPreferredSize(new Dimension(200, 100));
         JOptionPane.showMessageDialog(null, scrollPane, "Almacenes", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_bExistingWarehousesActionPerformed
 
