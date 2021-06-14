@@ -202,7 +202,7 @@ public class mainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bExitActionPerformed
-        //FALTA GUARDAR LOS DATOS DEL GRAFO EN EL TXT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        txtFile.WriteTxt(g);
         JOptionPane.showMessageDialog(null, "Hasta pronto, gracias por elegir Amazon.");
         System.exit(0);
     }//GEN-LAST:event_bExitActionPerformed
