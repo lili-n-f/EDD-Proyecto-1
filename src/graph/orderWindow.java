@@ -118,7 +118,7 @@ public class orderWindow extends javax.swing.JFrame {
                 bFinishOrderActionPerformed(evt);
             }
         });
-        jPanel1.add(bFinishOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 290, 140, -1));
+        jPanel1.add(bFinishOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 290, 170, -1));
 
         bFloydWarshall.setText("FLOYD-WARSHALL");
         bFloydWarshall.addActionListener(new java.awt.event.ActionListener() {

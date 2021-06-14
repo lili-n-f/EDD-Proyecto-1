@@ -402,13 +402,13 @@ public class Graph {
     public String buy(Warehouse warehouseToBuy, ProductList order, boolean shortPath){
         Product orderedP, inWarehouse;
         ProductList toOrderFromWarehouse, missingOrder, warehouseProds;
-        warehouseProds = warehouseToBuy.getStock();
+        //warehouseProds = warehouseToBuy.getStock();
         missingOrder = new ProductList();
         toOrderFromWarehouse = new ProductList();
         
         for (int i=0; i<order.getSize(); i++){
             orderedP = order.getNode(i);
-            inWarehouse = warehouseProds.getProductWithName(orderedP.getName());
+            inWarehouse = warehouseToBuy.getStock().getProductWithName(orderedP.getName());
             if (inWarehouse != null){ //entonces ese producto está en el almacén original
                     if (inWarehouse.getAmmount()<orderedP.getAmmount()){ //el almacén original no tiene suficiente para completar la orden
                             toOrderFromWarehouse.addLast(orderedP.getName(), inWarehouse.getAmmount()); //se añade a la lista de productos a ordenar del almacén original al producto ordenado con la cantidad que tiene el almacén.
@@ -425,9 +425,10 @@ public class Graph {
         if (missingOrder.isEmpty()){ //significa que toda la orden se completa del almacén original y no hay que buscar cómo completarla con otro almacén
             for (int i = 0; i<order.getSize(); i++){
                 orderedP = order.getNode(i);
-                warehouseProds.sellProduct(orderedP);
+                warehouseToBuy.getStock().sellProduct(orderedP);
             }
             return "La orden puede ser completada exitosamente a partir\ndel almacén escogido. Gracias por su compra.";
+        
         }else{
             
             WarehouseList available = availability(warehouseToBuy, missingOrder);
@@ -469,7 +470,7 @@ public class Graph {
                 if (complementaryWarehouse != null){ //entonces se encontró el almacén más cercano y conectado al almacén escogido que puede completar la orden
                     for (int i = 0; i<toOrderFromWarehouse.getSize(); i++){
                         orderedP = toOrderFromWarehouse.getNode(i);
-                        warehouseProds.sellProduct(orderedP); //se descuenta todo lo que se puede descontar del stock del almacén original
+                        warehouseToBuy.getStock().sellProduct(orderedP); //se descuenta todo lo que se puede descontar del stock del almacén original
                     }
                     for (int i = 0; i<missingOrder.getSize(); i++){
                         orderedP = missingOrder.getNode(i);
@@ -494,12 +495,12 @@ public class Graph {
         
         WarehouseList available = new WarehouseList();
         
-        for(int index = 0; index < warehouses.getSize(); index++){
+        for(int index = 0; index < warehousesInGraph; index++){
             if (index != shop.getID()){ //el almacén que complete la orden debe ser distinto al almacén original que no logró completar la orden en primer lugar
                 Warehouse pAux = warehouses.getNode(index);
                 
                 if (pAux != null){
-                        ProductList products = pAux.getStock();
+                    ProductList products = pAux.getStock();
 
                     boolean isWarehouseValid = true;
 
@@ -513,7 +514,7 @@ public class Graph {
                         }
                     }
                     if(isWarehouseValid){
-                      available.addLast(warehouses.getNode(index));
+                      available.addLast(pAux);
                     }
                 }
             }
@@ -613,7 +614,7 @@ public class Graph {
      */
     private String dijkPrint(Warehouse source, Warehouse target, int[]vertexPath, int lastDistance){
         String toPrintDik = "";
-        toPrintDik += "Distancia total, " + lastDistance + "\n" + "El reccorido empieza en " + source.getName() + " Pasa por: " + "\n";
+        toPrintDik += "Distancia total, " + lastDistance + "\n" + "El recorrido empieza en " + source.getName() + " Pasa por: " + "\n";
         int aux = target.getID();
         while (aux != -1){
             toPrintDik += warehouses.getNode(aux).getName();
