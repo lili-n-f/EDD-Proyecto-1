@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package graph;
-import javax.swing.JOptionPane;
 /**
  * Clase asociada a los almacenes, los cuales son los nodos del grafo.
  * @author Liliana Nóbrega
@@ -12,20 +11,49 @@ import javax.swing.JOptionPane;
 public class Warehouse {
 
     private String name;
-    private Product[] stock;
+    private ProductList stock;
     private int ID;
+    private Warehouse next;
 
     /**
      * Constructor de la clase Warehouse
-     * @param name nombre del almacén (por ejemplo, A, B, o C)
-     * @param stock array de productos (objetos de la clase Product) que se pueden vender desde el almacén
+     * @param name nombre del almacén (por ejemplo, A, B, C...)
+     * @param stock lista de productos (objetos de la clase Product) que se pueden vender desde el almacén
      */
-    public Warehouse(String name, Product[] stock){
+    public Warehouse(String name, ProductList stock){
             this.name = name;
             this.stock = stock;
             this.ID = -1;
+            this.next = null;
     }
-
+    
+    
+    
+    /**
+     * Constructor de la clase Warehouse
+     * @param name nombre del almacén
+     */
+    public Warehouse(String name){
+            this.name = name;
+            this.stock = new ProductList();
+            this.ID = -1;
+    }
+    
+    
+    /**
+     * Constructor de la clase Warehouse
+     * @param name nombre del almacén (por ejemplo, A, B, C...)
+     * @param stock lista de productos (objetos de la clase Product) que se pueden vender desde el almacén
+     * @param ID identificación del nodo almacén (representa su posición en la matriz de adyacencia del grafo)
+     */
+    public Warehouse(String name, ProductList stock, int ID){
+            this.name = name;
+            this.stock = stock;
+            this.ID = ID;
+            this.next = null;
+    }
+    
+    
     /**
      * Getter del atributo name: con él obtienes el nombre del almacén.
      * @return nombre del almacén
@@ -42,19 +70,36 @@ public class Warehouse {
             this.name = newName;
     }
 
-    /**
-     * Getter del atributo stock: con él obtienes el array de productos que se pueden vender desde el almacén.
-     * @return array de productos que se pueden vender desde el almacén
+      /**
+     * Método para obtener el siguiente nodo al que apunta
+     * @return el siguiente nodo al que apunta
      */
-    public Product[] getStock(){
+    public Warehouse getNext() {
+        return next;
+    }
+
+    /**
+     * Método para cambiar el siguiente nodo al que apunta
+     * @param next nuevo nodo al que apuntará el almacén
+     */
+    public void setNext(Warehouse next) {
+        this.next = next;
+    }
+    
+    
+    /**
+     * Getter del atributo stock: con él obtienes la lista de productos que se pueden vender desde el almacén.
+     * @return lista de productos que se pueden vender desde el almacén
+     */
+    public ProductList getStock(){
             return this.stock;
     }
 
     /**
-     * Setter del atributo stock: con él puedes darle un nuevo array de productos que se pueden vender al almacén.
-     * @param newStock nuevo array de productos que se pueden vender al almacén
+     * Setter del atributo stock: con él puedes darle una nueva lista de productos que se pueden vender al almacén.
+     * @param newStock nueva lista de productos que se pueden vender al almacén
      */
-    public void setStock(Product[] newStock){
+    public void setStock(ProductList newStock){
             this.stock = newStock;
     }
 
@@ -73,32 +118,22 @@ public class Warehouse {
     public void setID(int newID){
             this.ID = newID;
     }
-
+    
+   
     /**
-     * Método que permite añadir un nuevo producto al array de productos que se pueden vender en el almacén.
-     * @param productName nombre del producto a añadir
-     * @param productAmmount cantidad disponible del producto a añadir
+     * Método que retorna un string con el nombre y cantidad de cada producto en el stock del almacén (si es que tiene stock).
+     * @return un string con nombre y cantidad de cada producto del stock o un string vacío si el almacén no tiene stock (lista de productos está vacía).
      */
-    public void addProductToStock(String productName, int productAmmount){ //esto es para la parte de gestión de stock!!
-            boolean isNewProduct = true;
-            for (Product product : this.stock){
-                    if (product.getName().equals(productName)){
-                            JOptionPane.showMessageDialog(null, "El producto que se intenta añadir ya se encuentra en el almacén.");
-                            isNewProduct = false;
-                            break;
-                    }
-            }
-            if (isNewProduct){
-                    Product newProduct = new Product(productName, productAmmount);
-                    Product[] newStock = new Product[this.stock.length+1];
-                    int i = 0;
-                    for (; i < this.stock.length; i++){
-                            newStock[i] = this.stock[i];
-                    }
-                    newStock[i] = newProduct;
-                    this.setStock(newStock);
-                    JOptionPane.showMessageDialog(null, "El producto fue añadido con éxito.");
-            }
+    public String showStock(){
+        String warehouseStock = "Almacén "+this.name+"\n";
+        if (!this.stock.isEmpty()){
+            warehouseStock += this.stock.showProducts();
+        }else{
+            warehouseStock += "\tAlmacén vacío.\n";
+        }
+        warehouseStock += "\n";
+        return warehouseStock;
     }
+    
 }
 

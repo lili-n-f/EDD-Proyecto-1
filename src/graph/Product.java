@@ -12,6 +12,7 @@ package graph;
 public class Product {
 	private String name;
 	private int ammount;
+        private Product next;
 	
     /**
      * Constructor de la clase Product
@@ -54,6 +55,22 @@ public class Product {
     public void setAmmount(int newAmmount){
 		this.ammount = newAmmount;
 	}
+    
+    /**
+     * Getter del atributo next: retorna el nodo al que apunta la instancia de Product
+     * @return nodo Product al que apunta la instancia de Product
+     */
+    public Product getNext() {
+        return next;
+    }
+
+    /**
+     * Setter del atributo next: con él se puede cambiar el nodo al que apunta la instancia de Product
+     * @param next nuevo nodo Product al que apunta la instancia de la clase Product 
+     */
+    public void setNext(Product next) {
+        this.next = next;
+    }
 
     /**
      * Método usado para sustraer de la cantidad disponible del producto la cantidad que fue vendida en el almacén.
@@ -70,6 +87,14 @@ public class Product {
     public void buyProduct(int ammountBought){
 		this.ammount += ammountBought; 
 	}
+    
+    /**
+     * Método que retorna la información del nodo producto (su nombre y cantidad)
+     * @return string con el nombre y cantidad del producto
+     */
+    public String showInfo(){
+        return "\t"+ this.name + " x" + this.ammount + "\n";
+    }
 
 }
 

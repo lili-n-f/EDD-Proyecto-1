@@ -1,0 +1,9 @@
+Almacenes;
+Almacen a:
+Almacen b:
+Almacen c:
+Rutas;
+a,b,2
+b,a,2
+b,c,4
+c,a,3
